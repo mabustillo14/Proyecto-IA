@@ -118,7 +118,7 @@ def main(Ax, Ay, Bx, By):
     PuntoStart = (0,0) # 0,0
     PuntoEnd = (7,7) #7,7
 
-    print('\nLa trayectoria solucion que se debe seguir es:')
+    print('\nLa trayectoria solución que se debe seguir es:')
     #Pasamos los parametros del mapa, el punto A y B y devuelve el string solucion
     path = astar(maze, PuntoStart, PuntoEnd) 
     print(path)
@@ -137,9 +137,8 @@ def main(Ax, Ay, Bx, By):
     #Puntos A y B de distinto Color
     maze[lista[0]][lista[1]] = 7 
     maze[lista[len(lista)-2]][lista[len(lista)-1]] = 7 
-    
-    
-    MostrarMapa('mapa_solucion.png','Mapa Solucion', maze)
+    #Mostrar el Mapa con la solucion
+    MostrarMapa('mapa_solucion.png','Mapa Solución', maze)
 
 
     

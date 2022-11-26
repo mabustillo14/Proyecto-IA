@@ -4,7 +4,7 @@ if __name__ == '__main__':
     Posicion_Final = ['R3','R1','R4','R2']
     Soportes = ['A', 'B', 'C']
     #print("Posicion Inicial ", Posicion_Inicial)
-    #print("Posicion Final ", Posicion_Final)
+    print("Posicion Final ", Posicion_Final)
 
     Disposicion = [Posicion_Inicial,[],[]]
 
@@ -19,10 +19,39 @@ if __name__ == '__main__':
     
     print(Disposicion)
     #Determinar donde esta la base de la posicion final
-    for i in range(len(Disposicion)):
-        if Posicion_Final[0] in Disposicion[i]:
-            pie = Disposicion[i].index(Posicion_Final[0])
-            rama = Soportes[i]
+    raiz = -1
+    for i in range(len(Soportes)-1):
+        if Disposicion[i][0] == Posicion_Final[0]: 
+            raiz = i
+    
+    #Significa que esta apilada sobre la primer pieza de A
+    if(raiz ==-1):
+        Disposicion[2].append(Disposicion[1][0])
+        print("Mover la caja", Disposicion[1][0], " a ", Soportes[len(Soportes)-1])
+        Disposicion[1].pop()
+
+        Disposicion[1].append(Disposicion[0][1])
+        print("Mover la caja", Disposicion[0][1], " a ", Soportes[len(Soportes)-2])
+        Disposicion[0].pop()
+        raiz = 0
+    #Ya tendremos la raiz a nivel 0
+
+    rodilla = -1
+    for i in range(len(Soportes)-1):
+        if Disposicion[i][0] == Posicion_Final[1]: 
+            rodilla = i
+            print("Mover la caja", Posicion_Final[1], " a ", Soportes[raiz])
+    
+    
+    
+    
+    print (rodilla)
+
+
+
+    print(Disposicion) 
+        
+
 
     #print(pieza1, rama)    
 
@@ -30,6 +59,11 @@ if __name__ == '__main__':
 
     
    
+
+
+
+
+
 
 
 
