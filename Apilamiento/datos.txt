@@ -1,0 +1,2 @@
+Fecha y Hora de determinación de secuencia de Apilamiento: 2022-11-28 20:45:47
+Clavo,Arandela,Tornillo,Tuerca,
