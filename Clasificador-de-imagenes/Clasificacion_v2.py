@@ -37,22 +37,8 @@ def extraccion(image):
     #PARA MOMENTOS DE HU
     return aux, [hu[0], hu[1], hu[3]]
 
-global datos
-datos = []
-
-global fig
-fig = plt.figure()
-global ax
-ax = fig.add_subplot(111, projection='3d')
-
-
-
-def Data_base():
-
-    print("\nComienza carga de Data Base")
-    global fig
-    global ax
-    global datos
+def clasificacion(numero):
+    respuesta = []
 
     #Elemento de ferreteria
     class Elemento:
@@ -62,6 +48,7 @@ def Data_base():
             self.caracteristica = []
             self.distancia = 0
 
+
     #Analisis de la base de datos (YTrain)
     ##Entrenamiento de la base de datos 
     tornillo = io.ImageCollection('./Data Base/YTrain/YTornillos/*.png:./Data Base/YTrain/YTornillos/*.jpg')
@@ -69,7 +56,13 @@ def Data_base():
     arandela = io.ImageCollection('./Data Base/YTrain/YArandelas/*.png:./Data Base/YTrain/YArandelas/*.jpg')
     clavo = io.ImageCollection('./Data Base/YTrain/YClavos/*.png:./Data Base/YTrain/YClavos/*.jpg')
             
+    #Analisis de datos
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    datos = []
     i = 0
+
     # Analisis de tornillos
     iter = 0
     for objeto in tornillo:
@@ -136,18 +129,8 @@ def Data_base():
     # Elemento a evaluar
     #Recordar aplicar Transformacion.py cuando se quiera evaluar una nueva imagen.
     test = Elemento()
-    return test
+    #numero = input("Introduce numero de la foto: ")
 
-
-
-
-
-def clasifica(numero, test):
-    respuesta = []
-    global fig
-    global ax
-    global datos
-    
     nombre = './Data Base/YEvaluacion/photo'+str(numero)+'.jpg'
     image = io.imread(nombre)
 
@@ -437,16 +420,13 @@ if __name__ == '__main__':
         text = "Introduce numero de la foto de la Caja #" + str(i+1) + ": "
         numero = input(text)
         fotos_cajas.append(numero)
-    
-    #Precargar la Data Base de todas las imagenes
-    test = Data_base()
 
     #Hacer el analisis de imagen con cada imagen
     for i in range(cant_cajas):    
         print("\nAnalizando la Caja #", i+1)  
         numero = fotos_cajas[i]
-        #pieza=clasificacion(numero)
-        pieza=clasifica(numero,test)
+        pieza=clasificacion(numero)
+
         if(pieza[0] == pieza[len(pieza)-1]):
             print("La Caja # " + str(i+1) + " contiene: ", pieza[0])
             orden.append(pieza[0])
