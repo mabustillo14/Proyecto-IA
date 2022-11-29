@@ -134,11 +134,37 @@ if __name__ == '__main__':
     maze = Lab.Mapa()
     MostrarMapa('mapa.png','Mapa', maze)
 
-    print('\nIngrese la coordenada del punto A')
-    Ax = int(input ('Coordenada X: '))
-    Ay = int(input ('Coordenada Y: '))
-    print('\nIngrese la coordenada del punto B')
-    Bx = int(input ('Coordenada X: '))
-    By = int(input ('Coordenada Y: '))
-     
+    #Saber el tamaño de la matriz del laberinto
+    val_y=len(maze) -1 #Alto de laberinto
+    val_x=len(maze[0]) -1 #Ancho del laberinto
+
+    #Validar datos para una solución valida
+    flag = True
+    while(flag):
+        #Solicitamos Coordenadas
+        print('\nIngrese la coordenada del punto A')
+        Ax = int(input ('Coordenada X: '))
+        Ay = int(input ('Coordenada Y: '))
+
+        #Validamos que este dentro del mapa
+        if(0<=Ax<=val_x) and (0<=Ay<=val_y):
+            flag = False
+        else:
+            print("Error - Coordenada fuera del Laberinto")
+            print("Ingrese una Coordenada valida")
+
+    flag = True
+    while(flag):
+        #Solicitamos Coordenadas
+        print('\nIngrese la coordenada del punto B')
+        Bx = int(input ('Coordenada X: '))
+        By = int(input ('Coordenada Y: '))
+
+        #Validamos que este dentro del mapa
+        if(0<=Bx<=val_x) and (0<=By<=val_y):
+            flag = False
+        else:
+            print("Error - Coordenada fuera del Laberinto")
+            print("Ingrese una Coordenada valida")
+
     main(Ax, Ay, Bx, By)

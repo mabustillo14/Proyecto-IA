@@ -26,7 +26,7 @@ def Soltar(x): #Soltar un bloque en la Mesa
     Instrucciones.append("\tPRECOND: Sujetar(" + x + ")")
     Instrucciones.append("\tEFECTO: En_Mesa (" + x + "), Brazo_Libre, Libre(" + x + ")")
 
-def Solucion(Posicion_Inicial, Posicion_Final):
+def Solucion(Posicion_Inicial, Posicion_Final): #Secuencia de pasos a seguir
     Orden = [Posicion_Inicial[0]]
     Plan = []
     global Intrucciones
@@ -50,24 +50,20 @@ def Solucion(Posicion_Inicial, Posicion_Final):
         Plan.append("Poner " + mover_pieza + " sobre la Mesa ")
         Orden.append(mover_pieza)
 
-    #Buscamos la base de la nueva pila
-    pie = Orden.index(Posicion_Final[0])
-    i=0
-    j=1
+    #Secuencia de Apilamiento para obtener la posicion final
     flag = True
-    while(flag):
+    i=1 #Porque la base del nuevo apilado esta sobre la mesa
+    while (flag):
         if(i == len(Posicion_Final)-1):
-            flag=False
-        
-        if(Orden[i] == Posicion_Final[j] ):
-            Plan.append("Poner " + Orden[i] + " sobre " + Posicion_Final[j-1])
-            Sujetar(Orden[i])
-            Apilar(Orden[i], Posicion_Final[j-1])
-            i=0
-            j+=1
-        
-        i+=1
-    
+            flag = False
+
+        for j in range(len(Orden)):
+            if(Posicion_Final[i]==Orden[j]):
+                Sujetar(Orden[j])
+                Apilar(Orden[j], Posicion_Final[i-1])
+                Plan.append("Poner " + Orden[j] + " sobre " + Posicion_Final[i-1])
+        i+=1      
+
     #Mostrar Solucionn para el Usuario
     print("\nSolucion para el Usuario\n")    
     for i  in range(len(Plan)):
@@ -105,7 +101,6 @@ if __name__ == '__main__':
         nuevo_objetivo = input("Separado por una coma(,): ")
         secuencia_objetivo = nuevo_objetivo.split(",")
         
-
         #Validamos los datos ingresados
         #Convertimos la lista en un ser donde no toma elementos repetidos
         if(len(Posicion_Inicial) == len(set(secuencia_objetivo))):

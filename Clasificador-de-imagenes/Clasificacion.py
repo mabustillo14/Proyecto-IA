@@ -48,8 +48,9 @@ ax = fig.add_subplot(111, projection='3d')
 
 
 def Data_base():
-
-    print("\nComienza carga de Data Base")
+    print("\n--------------------------------------------------------------------")
+    print("Comienza carga de Data Base")
+    print("--------------------------------------------------------------------\n")
     global fig
     global ax
     global datos
@@ -127,7 +128,8 @@ def Data_base():
     ax.set_ylabel('componente 2')
     ax.set_zlabel('componente 4')
 
-    plt.show()
+    plt.savefig("Graficos/Grafico_Base_de_datos ")
+    #plt.show()
 
     print("Analisis completo de la base de datos de YTrain")
     print("Cantidad de imagenes analizadas: ")
@@ -136,17 +138,20 @@ def Data_base():
     # Elemento a evaluar
     #Recordar aplicar Transformacion.py cuando se quiera evaluar una nueva imagen.
     test = Elemento()
+
+    print("--------------------------------------------------------------------\n")
     return test
 
 
 
 
 
-def clasifica(numero, test):
+def clasifica(numero, test, numero_caja):
     respuesta = []
     global fig
     global ax
     global datos
+    global contador_cajas
     
     nombre = './Data Base/YEvaluacion/photo'+str(numero)+'.jpg'
     image = io.imread(nombre)
@@ -246,7 +251,8 @@ def clasifica(numero, test):
     ax.set_ylabel('componente 2')
     ax.set_zlabel('componente 4')
 
-    plt.show()
+    plt.savefig("Graficos/Means_de_caja_"+ str(numero_caja))
+    #plt.show()
 
     # Asignacion, Actualizacion y Convergencia
     tornillo_flag = True
@@ -425,16 +431,29 @@ def clasifica(numero, test):
 
     return respuesta
 
+def Mostrar_Apilado(Apilado):
+    for i in range(len(Apilado)):
+        print("-------------------------")
+        print("|\t", Apilado[len(Apilado)-1-i]," \t|")
+    print("=========================\n")
 
 if __name__ == '__main__':
     orden = []
+    flag = True
+    while(flag):
+        cant_cajas = int(input("\nIntroduce la cantidad de cajas apiladas: "))
 
-    cant_cajas = int(input("Introduce la cantidad de cajas apiladas: "))
+        if(cant_cajas>0):
+            flag= False
+        else:
+            print("Error - Ingrese una cantidad de cajas valida")
+
     fotos_cajas = [] #lista con los valores de las fotos a evaluar
 
     #Pedir todos los numeros de las fotos a evaluar
     for i in range(cant_cajas):
         text = "Introduce numero de la foto de la Caja #" + str(i+1) + ": "
+        contador_cajas = i+1
         numero = input(text)
         fotos_cajas.append(numero)
     
@@ -442,11 +461,13 @@ if __name__ == '__main__':
     test = Data_base()
 
     #Hacer el analisis de imagen con cada imagen
-    for i in range(cant_cajas):    
-        print("\nAnalizando la Caja #", i+1)  
+    for i in range(cant_cajas):
+        print("\n--------------------------------------------------------------------")    
+        print("Analizando la Caja #", i+1)
+        print("--------------------------------------------------------------------\n")  
         numero = fotos_cajas[i]
-        #pieza=clasificacion(numero)
-        pieza=clasifica(numero,test)
+        #pieza=clasificacion(numero de foto, la base de datos, el numero de la caja a evaluar)
+        pieza=clasifica(numero,test,i+1)
         if(pieza[0] == pieza[len(pieza)-1]):
             print("La Caja # " + str(i+1) + " contiene: ", pieza[0])
             orden.append(pieza[0])
@@ -454,7 +475,9 @@ if __name__ == '__main__':
             print("La Caja # " + str(i+1) + " contiene: segun KNN ", pieza[0], " y segun KMeans ", pieza[len(pieza)-1])
             orden.append(pieza[0])
 
-    print("\n",orden)
+    print("\n",orden,"\n")
+
+    Mostrar_Apilado(orden)
 
     #Generar un txt con el orden de apilamiento
     file = open("../Apilamiento/datos.txt", "w")
