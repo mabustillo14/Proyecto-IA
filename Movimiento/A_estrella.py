@@ -6,11 +6,12 @@ class nodoo():
         self.parent = parent
         self.position = position
 
-        self.g = 0
-        self.h = 0
-        self.f = 0
+        self.g = 0 #G es la distancia entre el nodo actual y el nodo inicial
+        self.h = 0 #H es la heurística: distancia estimada desde el nodo actual hasta el nodo final
+        self.f = 0 #F es el costo total del nodo.
     def __eq__(self, other):
         return self.position == other.position
+
 
 def astar(maze, start, end):
     start_node = nodoo(None, start)
@@ -71,6 +72,7 @@ def astar(maze, start, end):
                     continue
             open_list.append(child)
 
+
 def MostrarMapa(NombreMapa, titulo, maze):
     #Generar Figura
     plt.matshow(maze)
@@ -90,6 +92,7 @@ def MostrarMapa(NombreMapa, titulo, maze):
     
     #Generar Ventana emergente
     plt.show()    
+
 
 def main(Ax, Ay, Bx, By):
     
@@ -123,8 +126,6 @@ def main(Ax, Ay, Bx, By):
     maze[lista[len(lista)-2]][lista[len(lista)-1]] = 7 
     #Mostrar el Mapa con la solucion
     MostrarMapa('mapa_solucion.png','Mapa Solución', maze)
-
-
     
 
 if __name__ == '__main__':
