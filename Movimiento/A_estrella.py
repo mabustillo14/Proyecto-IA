@@ -1,14 +1,16 @@
 import matplotlib.pyplot as plt
 import Laberinto as Lab
+from PIL import Image
+
 
 class nodoo():
     def __init__(self, parent=None, position=None):
         self.parent = parent
         self.position = position
 
-        self.g = 0 #G es la distancia entre el nodo actual y el nodo inicial
-        self.h = 0 #H es la heurística: distancia estimada desde el nodo actual hasta el nodo final
-        self.f = 0 #F es el costo total del nodo.
+        self.g = 0 # G es la distancia entre el nodo actual y el nodo inicial
+        self.h = 0 # H es la heurística: distancia estimada desde el nodo actual hasta el nodo final
+        self.f = 0 # F es el costo total del nodo.
     def __eq__(self, other):
         return self.position == other.position
 
@@ -74,60 +76,83 @@ def astar(maze, start, end):
 
 
 def MostrarMapa(NombreMapa, titulo, maze):
-    #Generar Figura
+    # Generar Figura
     plt.matshow(maze)
-    #Agregar nombre a los ejes
+    # Agregar nombre a los ejes
     plt.xlabel("Coordenada X", size = 16,)
     plt.ylabel("Coordenada Y", size = 16)
-    #Agregar el titulo
-    plt.title(titulo, 
-          fontdict={'family': 'fantasy', 
-                    'color' : 'black',
-                    
-                    'size': 16},
-          loc='center')
+    # Agregar el titulo
+    plt.title(
+        titulo, 
+        fontdict={'color':'black', 'size':16},
+        loc='center')
 
-    #Guardar figura
+    # Guardar figura
     plt.savefig(NombreMapa)
     
-    #Generar Ventana emergente
-    plt.show()    
+    # Generar Ventana emergente
+    # plt.show()    
+
+def validacion_coordenadas(Ax, Ay, Bx, By, maze):
+    # Saber el tamaño de la matriz del laberinto
+    val_y=len(maze) -1      # Alto de laberinto
+    val_x=len(maze[0]) -1   # Ancho del laberinto
+
+    # Validamos que este dentro del mapa
+    if (0<=Ax<=val_x) and (0<=Ay<=val_y) and (0<=Bx<=val_x) and (0<=By<=val_y):
+        return True
+    else:
+        return False
 
 
 def main(Ax, Ay, Bx, By):
+
+    # Cast: Conversión string a int
+    Ax, Ay, Bx, By = int(Ax), int(Ay), int(Bx), int(By)
     
-    #Obtener el Mapa
+    # Obtener el Mapa
     maze = Lab.Mapa()
 
-    #Establecer los puntos de comienzo y fin
-    PuntoStart = (Ax, Ay) # 0,0
-    PuntoEnd = (Bx, By) #7,7
-    #PuntoStart = (2,2) # 0,0
-    #PuntoEnd = (16,16) #7,7
-
-    print('\nLa trayectoria solución que se debe seguir es:')
-    #Pasamos los parametros del mapa, el punto A y B y devuelve el string solucion
-    path = astar(maze, PuntoStart, PuntoEnd) 
-    print(path)
-
-    #Agregar al Mapa la secuencia de la solucion
-    lista = []
-    for i in range(len(path)):
-        num1 = path[i][0] #Coordenada X
-        num2 = path[i][1] #Coordenada Y
-        lista.append(num1)
-        lista.append(num2)
+    # Validar que el input sea el correcto (== True), sino resaltar el error
+    if validacion_coordenadas(Ax, Ay, Bx, By, maze):
     
-    #Colorear los puntos solucion
-    for i in range(0,len(lista),2):
-        maze[lista[i]][lista[i+1]] = 5 
-    #Puntos A y B de distinto Color
-    maze[lista[0]][lista[1]] = 7 
-    maze[lista[len(lista)-2]][lista[len(lista)-1]] = 7 
-    #Mostrar el Mapa con la solucion
-    MostrarMapa('mapa_solucion.png','Mapa Solución', maze)
-    
+        # Establecer los puntos de comienzo y fin
+        PuntoStart = (Ax, Ay) # 0,0
+        PuntoEnd = (Bx, By) #7,7
+        # PuntoStart = (2,2) # 0,0
+        # PuntoEnd = (16,16) # 7,7
 
+        print('\nLa trayectoria solución que se debe seguir es:')
+        # Pasamos los parametros del mapa, el punto A y B y devuelve el string solucion
+        path = astar(maze, PuntoStart, PuntoEnd) 
+        print(path)
+
+        # Agregar al Mapa la secuencia de la solucion
+        lista = []
+        for i in range(len(path)):
+            num1 = path[i][0] # Coordenada X
+            num2 = path[i][1] # Coordenada Y
+            lista.append(num1)
+            lista.append(num2)
+        
+        # Colorear los puntos solucion
+        for i in range(0,len(lista),2):
+            maze[lista[i]][lista[i+1]] = 5 
+        # Puntos A y B de distinto Color
+        maze[lista[0]][lista[1]] = 7 
+        maze[lista[len(lista)-2]][lista[len(lista)-1]] = 7 
+        # Mostrar el Mapa con la solucion
+        MostrarMapa('mapa_solucion.png','Mapa Solución', maze)
+
+        # Output para interfaz gráfica
+        imagen_output = Image.open('mapa_solucion.png')
+        return path, imagen_output
+    
+    else:
+        print("ERROR: Coordenada fuera del Laberinto")
+        return "ERROR: Coordenada fuera del Laberinto", None
+    
+"""
 if __name__ == '__main__':
     print('--------------------Método A*--------------------')
     print('Llegar del punto A al punto B con el método A*')
@@ -169,3 +194,4 @@ if __name__ == '__main__':
             print("Ingrese una Coordenada valida")
 
     main(Ax, Ay, Bx, By)
+"""
