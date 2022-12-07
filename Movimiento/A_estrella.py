@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import Laberinto as Lab
 from PIL import Image
 
-
 class nodoo():
     def __init__(self, parent=None, position=None):
         self.parent = parent
@@ -74,7 +73,6 @@ def astar(maze, start, end):
                     continue
             open_list.append(child)
 
-
 def MostrarMapa(NombreMapa, titulo, maze):
     # Generar Figura
     plt.matshow(maze)
@@ -88,10 +86,7 @@ def MostrarMapa(NombreMapa, titulo, maze):
         loc='center')
 
     # Guardar figura
-    plt.savefig(NombreMapa)
-    
-    # Generar Ventana emergente
-    # plt.show()    
+    plt.savefig(NombreMapa)   
 
 def validacion_coordenadas(Ax, Ay, Bx, By, maze):
     # Saber el tamaño de la matriz del laberinto
@@ -105,8 +100,7 @@ def validacion_coordenadas(Ax, Ay, Bx, By, maze):
         return False
 
 
-def main(Ax, Ay, Bx, By):
-
+def solucion(Ax, Ay, Bx, By):
     # Cast: Conversión string a int
     Ax, Ay, Bx, By = int(Ax), int(Ay), int(Bx), int(By)
     
@@ -152,8 +146,9 @@ def main(Ax, Ay, Bx, By):
         print("ERROR: Coordenada fuera del Laberinto")
         return "ERROR: Coordenada fuera del Laberinto", None
     
-"""
-if __name__ == '__main__':
+
+if __name__ == '__main__': #Para que se pueda usar sin interfaz grafica
+    
     print('--------------------Método A*--------------------')
     print('Llegar del punto A al punto B con el método A*')
     print('La esquina superior izquierda es la coordenada (0,0)')
@@ -193,5 +188,4 @@ if __name__ == '__main__':
             print("Error - Coordenada fuera del Laberinto")
             print("Ingrese una Coordenada valida")
 
-    main(Ax, Ay, Bx, By)
-"""
+    solucion(Ax, Ay, Bx, By)
