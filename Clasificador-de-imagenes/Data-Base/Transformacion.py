@@ -5,7 +5,7 @@ import numpy as np
 ##Quitar linea de fondo
 #####################################################################################################################################
 nombre = raw_input("Ingrese nombre de la imagen: ")
-path="/home/carlos/Documentos/Image-Classifier/Data Base/Evaluacion/"+str(nombre)+".jpg"
+path="/home/carlos/Documentos/Image-Classifier/Data-Base/Evaluacion/"+str(nombre)+".jpg"
 imagen = cv2.imread(path)
 
 #Determinar dimensiones de la imagen
@@ -15,7 +15,7 @@ height, width, channels = imagen.shape
 x=700
 crop_img = imagen[0:height, x:width]
 
-new_path="/home/carlos/Documentos/Image-Classifier/Data Base/YEvaluacion/"+str(nombre)+".jpg"
+new_path="/home/carlos/Documentos/Image-Classifier/Data-Base/YEvaluacion/"+str(nombre)+".jpg"
 cv2.imwrite(new_path, crop_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows() 

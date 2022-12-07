@@ -54,6 +54,7 @@ def Data_base():
     global fig
     global ax
     global datos
+    datos = []
 
     #Elemento de ferreteria
     class Elemento:
@@ -65,11 +66,11 @@ def Data_base():
 
     #Analisis de la base de datos (YTrain)
     ##Entrenamiento de la base de datos 
-    tornillo = io.ImageCollection('./Data Base/YTrain/YTornillos/*.png:./Data Base/YTrain/YTornillos/*.jpg')
-    tuerca = io.ImageCollection('./Data Base/YTrain/YTuercas/*.png:./Data Base/YTrain/YTuercas/*.jpg')
-    arandela = io.ImageCollection('./Data Base/YTrain/YArandelas/*.png:./Data Base/YTrain/YArandelas/*.jpg')
-    clavo = io.ImageCollection('./Data Base/YTrain/YClavos/*.png:./Data Base/YTrain/YClavos/*.jpg')
-            
+    tornillo = io.ImageCollection('./Data-Base/YTrain/YTornillos/*.png:./Data-Base/YTrain/YTornillos/*.jpg')
+    tuerca = io.ImageCollection('./Data-Base/YTrain/YTuercas/*.png:./Data-Base/YTrain/YTuercas/*.jpg')
+    arandela = io.ImageCollection('./Data-Base/YTrain/YArandelas/*.png:./Data-Base/YTrain/YArandelas/*.jpg')
+    clavo = io.ImageCollection('./Data-Base/YTrain/YClavos/*.png:./Data-Base/YTrain/YClavos/*.jpg')
+
     i = 0
     # Analisis de tornillos
     iter = 0
@@ -146,15 +147,17 @@ def Data_base():
 
 
 
-def clasifica(numero, test, numero_caja):
+def clasifica(image, test, numero_caja):
+
+    print("\n--------------------------------------------------------------------")
+    print("Comienza Análisis de la Caja #",numero_caja)
+    print("--------------------------------------------------------------------\n")
+
     respuesta = []
     global fig
     global ax
     global datos
     global contador_cajas
-    
-    nombre = './Data Base/YEvaluacion/photo'+str(numero)+'.jpg'
-    image = io.imread(nombre)
 
     test.image, test.caracteristica = extraccion(image)
     test.pieza = 'Arandela' # label inicial 
@@ -186,7 +189,7 @@ def clasifica(numero, test, numero_caja):
 
     print("Prediccion para KNN con K=1: ")    
     print(test.pieza)
-    respuesta.append(test.pieza)
+    KNN = test.pieza
 
     # Algoritmo de ordenamiento de burbuja-> lo elegi porque es bastante estable
     swap = True
@@ -202,7 +205,6 @@ def clasifica(numero, test, numero_caja):
     k = 9
     for i in range(k):
         print(datos[i].pieza)
-        respuesta.append(datos[i].pieza)
 
     #K MEANS
     import random
@@ -252,7 +254,6 @@ def clasifica(numero, test, numero_caja):
     ax.set_zlabel('componente 4')
 
     plt.savefig("Graficos/Means_de_caja_"+ str(numero_caja))
-    #plt.show()
 
     # Asignacion, Actualizacion y Convergencia
     tornillo_flag = True
@@ -427,58 +428,14 @@ def clasifica(numero, test, numero_caja):
 
     print("\nPrediccion para KMeans: ")
     print(test.pieza)
-    respuesta.append(test.pieza)
+    KMEANS = test.pieza
 
+    #confidendes = {"KNN": KNN, "KMEANS": KMEANS}
+    respuesta.append("KNN: " + KNN)
+    respuesta.append("KMEANS: "+KMEANS)
     return respuesta
 
-def Mostrar_Apilado(Apilado):
-    for i in range(len(Apilado)):
-        print("-------------------------")
-        print("|\t", Apilado[len(Apilado)-1-i]," \t|")
-    print("=========================\n")
-
-if __name__ == '__main__':
-    orden = []
-    flag = True
-    while(flag):
-        cant_cajas = int(input("\nIntroduce la cantidad de cajas apiladas: "))
-
-        if(cant_cajas>0):
-            flag= False
-        else:
-            print("Error - Ingrese una cantidad de cajas valida")
-
-    fotos_cajas = [] #lista con los valores de las fotos a evaluar
-
-    #Pedir todos los numeros de las fotos a evaluar
-    for i in range(cant_cajas):
-        text = "Introduce numero de la foto de la Caja #" + str(i+1) + ": "
-        contador_cajas = i+1
-        numero = input(text)
-        fotos_cajas.append(numero)
-    
-    #Precargar la Data Base de todas las imagenes
-    test = Data_base()
-
-    #Hacer el analisis de imagen con cada imagen
-    for i in range(cant_cajas):
-        print("\n--------------------------------------------------------------------")    
-        print("Analizando la Caja #", i+1)
-        print("--------------------------------------------------------------------\n")  
-        numero = fotos_cajas[i]
-        #pieza=clasificacion(numero de foto, la base de datos, el numero de la caja a evaluar)
-        pieza=clasifica(numero,test,i+1)
-        if(pieza[0] == pieza[len(pieza)-1]):
-            print("La Caja # " + str(i+1) + " contiene: ", pieza[0])
-            orden.append(pieza[0])
-        else:
-            print("La Caja # " + str(i+1) + " contiene: segun KNN ", pieza[0], " y segun KMeans ", pieza[len(pieza)-1])
-            orden.append(pieza[0])
-
-    print("\n",orden,"\n")
-
-    Mostrar_Apilado(orden)
-
+def GenerarArchivo(orden):
     #Generar un txt con el orden de apilamiento
     file = open("../Apilamiento/datos.txt", "w")
     ahora = datetime.now()
@@ -489,3 +446,108 @@ if __name__ == '__main__':
         file.write(orden[i])
         file.write(",")
     file.close()
+
+def main(foto4, foto3, foto2, foto1):
+    orden = []
+
+    test = Data_base()
+    resultado1 = clasifica(foto1,test,1)
+    resultado2 = clasifica(foto2,test,2)
+    resultado3 = clasifica(foto3,test,3)
+    resultado4 = clasifica(foto4,test,4)
+
+    #Devolver orden de Apilamiento
+    #La prioridad es el metodo KNN por todas las pruebas hechas en eficiencia
+    aux=resultado1[0].split(":") #Le quitamos el "KNN:", para ello lo separamos por :
+    orden.append(aux[1]) # Tomamos el segundo termino de la separacion
+    aux=resultado2[0].split(":")
+    orden.append(aux[1])
+    aux=resultado3[0].split(":")
+    orden.append(aux[1])
+    aux=resultado4[0].split(":")
+    orden.append(aux[1])
+
+    #Archivo con el orden de apilamiento
+    GenerarArchivo(orden)
+
+    print("\n--------------------------------------------------------------------")
+    print("Conclusiones")
+    print("--------------------------------------------------------------------\n")
+    print("Resultados:")
+    print("Caja 4:", resultado4)
+    print("Caja 3:", resultado3)
+    print("Caja 2:", resultado2)
+    print("Caja 1:", resultado1)
+
+    print("\nLa secuencia de apilamiento ascendente es:",orden)
+
+    Mostrar_Apilado(orden)
+
+    return resultado4, resultado3, resultado2, resultado1, orden
+
+
+def Mostrar_Apilado(Apilado):
+    print("\n\nRepresentación Simbolica del Resultado de la secuencia:")
+    for i in range(len(Apilado)):
+        print("\t-------------------------")
+        print("\t|\t", Apilado[len(Apilado)-1-i]," \t|")
+    print("\t=========================\n")
+
+
+    
+  
+if __name__ == '__main__': #Para que se pueda usar sin interfaz
+    orden = []
+    flag = True
+    cant_cajas = 4
+    fotos_cajas = [] #lista con los valores de las fotos a evaluar
+    inicio = ""
+    print("\n--------------------------------------------------------------------")
+    print("Clasificación de Objetos")
+    print("--------------------------------------------------------------------\n")
+
+    for i  in range(cant_cajas-1):
+            #Anadir Condiciones Iniciales
+            inicio += "Sobre(Caja " +   str(cant_cajas-i) + ",Caja " + str(cant_cajas-1-i) + "), "
+    inicio += "Sobre(Caja 1, Mesa)"
+    print("Orden de apilamiento:", inicio, "\n")
+
+    #Pedir todos los numeros de las fotos a evaluar
+    for i in range(cant_cajas):
+        text = "Introduce numero de la foto de la Caja #" + str(cant_cajas-i) + ": "
+        numero = input(text)
+        fotos_cajas.append(numero)
+
+    test = Data_base()
+    resultado = []
+    for i in range(cant_cajas):
+        nombre = './Data-Base/YEvaluacion/photo'+str(fotos_cajas[cant_cajas-i-1])+'.jpg'
+        image = io.imread(nombre)
+        resultado.append(clasifica(image,test,i+1))
+    
+    print("\n--------------------------------------------------------------------")
+    print("Conclusiones")
+    print("--------------------------------------------------------------------\n")
+    print("Resultados:")
+    for i in range(cant_cajas):
+        print("Caja ", cant_cajas-i, ":",resultado[cant_cajas-i-1])
+
+    #Devolver orden de Apilamiento
+    #La prioridad es el metodo KNN por todas las pruebas hechas en eficiencia
+    aux=resultado[0][0].split(":") #Le quitamos el "KNN:", para ello lo separamos por :
+    orden.append(aux[1]) # Tomamos el segundo termino de la separacion
+    aux=resultado[1][0].split(":")
+    orden.append(aux[1])
+    aux=resultado[2][0].split(":")
+    orden.append(aux[1])
+    aux=resultado[3][0].split(":")
+    orden.append(aux[1])
+
+    GenerarArchivo(orden)
+
+    
+
+    print("\nLa secuencia de apilamiento ascendente es:",orden)
+
+    Mostrar_Apilado(orden)
+    print("\nFin de la Ejecución")

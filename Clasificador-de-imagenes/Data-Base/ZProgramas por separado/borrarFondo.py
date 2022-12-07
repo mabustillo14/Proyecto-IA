@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 #Load the Image
-imgo = cv2.imread('/home/carlos/Documentos/Image-Classifier/Data Base/YTrain/ZTornillos/photo0.jpg')
+imgo = cv2.imread('/home/carlos/Documentos/Image-Classifier/Data-Base/YTrain/ZTornillos/photo0.jpg')
 height, width = imgo.shape[:2]
 
 #Create a mask holder

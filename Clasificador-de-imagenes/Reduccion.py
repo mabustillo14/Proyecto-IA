@@ -44,10 +44,10 @@ def hu(image):
     return caracteristica
 
 #Determinacion de la base de datos
-tornillo = io.ImageCollection('./Data Base/YTrain/YTornillos/*.png:./Data Base/YTrain/YTornillos/*.jpg')
-tuerca = io.ImageCollection('./Data Base/YTrain/YTuercas/*.png:./Data Base/YTrain/YTuercas/*.jpg')
-arandela = io.ImageCollection('./Data Base/YTrain/YArandelas/*.png:./Data Base/YTrain/YArandelas/*.jpg')
-clavo = io.ImageCollection('./Data Base/YTrain/YClavos/*.png:./Data Base/YTrain/YClavos/*.jpg')
+tornillo = io.ImageCollection('./Data-Base/YTrain/YTornillos/*.png:./Data-Base/YTrain/YTornillos/*.jpg')
+tuerca = io.ImageCollection('./Data-Base/YTrain/YTuercas/*.png:./Data-Base/YTrain/YTuercas/*.jpg')
+arandela = io.ImageCollection('./Data-Base/YTrain/YArandelas/*.png:./Data-Base/YTrain/YArandelas/*.jpg')
+clavo = io.ImageCollection('./Data-Base/YTrain/YClavos/*.png:./Data-Base/YTrain/YClavos/*.jpg')
 
 tornillo_gray = []
 tornillo_n = []

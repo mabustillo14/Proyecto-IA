@@ -23,7 +23,7 @@ def sobel(image):
     image = filters.sobel(image)
     return image
 
-img = io.imread('./Data Base/YTrain/ZArandelas/photo0.jpg')
+img = io.imread('./Data-Base/YTrain/ZArandelas/photo0.jpg')
 tornillo = escala_grises(img)
 tornillo = normalizacion(tornillo)
 

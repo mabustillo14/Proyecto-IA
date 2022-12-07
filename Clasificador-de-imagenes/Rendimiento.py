@@ -68,10 +68,10 @@ class Elemento:
 ##Entrenamiento de la base de datos
 def analisis_de_datos():
 
-    tornillo = io.ImageCollection('./Data Base/YTrain/YTornillos/*.png:./Data Base/YTrain/YTornillos/*.jpg')
-    tuerca = io.ImageCollection('./Data Base/YTrain/YTuercas/*.png:./Data Base/YTrain/YTuercas/*.jpg')
-    arandela = io.ImageCollection('./Data Base/YTrain/YArandelas/*.png:./Data Base/YTrain/YArandelas/*.jpg')
-    clavo = io.ImageCollection('./Data Base/YTrain/YClavos/*.png:./Data Base/YTrain/YClavos/*.jpg')
+    tornillo = io.ImageCollection('./Data-Base/YTrain/YTornillos/*.png:./Data-Base/YTrain/YTornillos/*.jpg')
+    tuerca = io.ImageCollection('./Data-Base/YTrain/YTuercas/*.png:./Data-Base/YTrain/YTuercas/*.jpg')
+    arandela = io.ImageCollection('./Data-Base/YTrain/YArandelas/*.png:./Data-Base/YTrain/YArandelas/*.jpg')
+    clavo = io.ImageCollection('./Data-Base/YTrain/YClavos/*.png:./Data-Base/YTrain/YClavos/*.jpg')
     
     datos = []
     i = 0
@@ -122,10 +122,10 @@ def analisis_de_datos():
 ##Prueba de la base de datos (Yprueba)
 def analisis_de_prueba():
 
-    tornillo_prueba = io.ImageCollection('./Data Base/YTest/YTornillos/*.png:./Data Base/YTest/YTornillos/*.jpg')
-    tuerca_prueba = io.ImageCollection('./Data Base/YTest/YTuercas/*.png:./Data Base/YTest/YTuercas/*.jpg')
-    arandela_prueba = io.ImageCollection('./Data Base/YTest/YArandelas/*.png:./Data Base/YTest/YArandelas/*.jpg')
-    clavo_prueba = io.ImageCollection('./Data Base/YTest/YClavos/*.png:./Data Base/YTest/YClavos/*.jpg')
+    tornillo_prueba = io.ImageCollection('./Data-Base/YTest/YTornillos/*.png:./Data-Base/YTest/YTornillos/*.jpg')
+    tuerca_prueba = io.ImageCollection('./Data-Base/YTest/YTuercas/*.png:./Data-Base/YTest/YTuercas/*.jpg')
+    arandela_prueba = io.ImageCollection('./Data-Base/YTest/YArandelas/*.png:./Data-Base/YTest/YArandelas/*.jpg')
+    clavo_prueba = io.ImageCollection('./Data-Base/YTest/YClavos/*.png:./Data-Base/YTest/YClavos/*.jpg')
     
     prueba = []
     i = 0

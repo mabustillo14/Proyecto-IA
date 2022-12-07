@@ -32,7 +32,7 @@ with open("datos.txt") as archivo:
 inputs =  []
 for i in range(4):
     titulo = "Caja " +  str(4-i)
-    inputs.append(gr.Radio(Posicion_Inicial))
+    inputs.append(gr.Radio(Posicion_Inicial, label=titulo))
 
 #demo = gr.Interface(fn=main, inputs=[text1, text2, text3, text4], outputs=[text5,image1],title=title,description=description,article=article, css="body {background-image: url('file=mapa.png')}")
 demo = gr.Interface(

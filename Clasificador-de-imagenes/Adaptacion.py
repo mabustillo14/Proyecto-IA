@@ -1,3 +1,5 @@
+import cv2
+
 #Imagen a analizar
 #Las fotos de entrada estan en formato png o jpeg
 prueba = './ejemplos/arandela_internet.jpg'
@@ -9,7 +11,7 @@ prueba = './ejemplos/arandela_internet.jpg'
 
 #Aca cargamos la imagen
 imagen = cv2.imread(prueba)
-#imagen = cv2.imread('Data Base/YTrain/ZArandelas/photo0.jpg')
+#imagen = cv2.imread('Data-Base/YTrain/ZArandelas/photo0.jpg')
 #imagen = cv2.imread('ejemplos/arandela_internet.jpg')
 #imagen = cv2.imread('ejemplos/arandelas2_internet.png')
 #imagen = cv2.imread('ejemplos/tornillo_prueba.jpg')
@@ -33,12 +35,9 @@ texto = 'Contornos encontrados: '+ str(len(ctns))
 cv2.putText(imagen, texto, (10,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
 	(255, 0, 0), 1)
 
-path="/home/carlos/Documentos/Image-Classifier/Figures/"
-fileb="Figure_25.png"
-
+path="./Figuras_test/"
+fileb="Figura_adaptacion_0.png"
 cv2.imwrite(path + fileb, imagen)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
 
 #####################################################################################################################################
 ##Uso de Thresholding para detectar contornos
@@ -73,16 +72,12 @@ for c in cnts:
 	cv2.putText(imagen,mensaje,(x-40,y),font,0.75,
 		(255,0,0),2,cv2.LINE_AA)
 	cv2.drawContours(imagen, [c], 0, (255,0,0),2)
-	cv2.waitKey(0)
 	i = i+1
 
-#path="/home/carlos/Documentos/Image-Classifier/ejemplos/"
-#fileb="contadorObj2.jpg"
-path="/home/carlos/Documentos/Image-Classifier/Figures/"
-fileb="Figure_26.png"
-
+path="./Figuras_test/"
+fileb="Figura_adaptacion_1.png"
 cv2.imwrite(path + fileb, imagen)
-cv2.destroyAllWindows()
+
 
 #####################################################################################################################################
 ##Recortar imagen a partir de Algoritmo de Canny
@@ -101,9 +96,6 @@ x,y,w,h = cv2.boundingRect(ctns[0]) #x,y: coordenada de la parte izquierda de ar
 
 crop_img = imagen[y:y+h, x:x+w]
 
-path="/home/carlos/Documentos/Image-Classifier/"
-fileb="prueba_imagenCortada.jpg"
-
+path="./Figuras_test/"
+fileb="Figura_adaptacion_2.png"
 cv2.imwrite(path + fileb, crop_img)
-cv2.waitKey(0)
-cv2.destroyAllWindows() 
