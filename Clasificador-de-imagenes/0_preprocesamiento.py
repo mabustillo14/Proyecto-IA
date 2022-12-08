@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
-plt.rcParams['image.cmap'] = 'gray'
+
+plt.rcParams['image.cmap'] = 'gray'  # Si no le pusiera esto me quedaria fondo amarillo y lineas violeta
 
 import numpy as np
 import cv2
@@ -78,7 +79,6 @@ ax0.set_title('WG, WB y WR por skimage')
 
 # Guardar resultados
 plt.savefig("./pruebas/0_preprocesamiento/descomposion_rgb_con_libreria.jpg")
-
 
 ###########################################################################################################
 ## Conversion de RGB a escalas de grises utilizando pesos WG, WR y WB arbitrarios ingresados manualmente ##
