@@ -13,10 +13,10 @@ article = "**Mario Bustillo 2022** | [Github](https://github.com/mabustillo14) |
 enable_queue = False
 
 # Entrada de datos
-image1 = gr.Image(shape=(224, 224), label="Foto - Caja 1")
-image2 = gr.Image(shape=(224, 224), label="Foto - Caja 2")
-image3 = gr.Image(shape=(224, 224), label="Foto - Caja 3")
-image4 = gr.Image(shape=(224, 224), label="Foto - Caja 4")
+image1 = gr.Image(label="Foto - Caja 1")
+image2 = gr.Image(label="Foto - Caja 2")
+image3 = gr.Image(label="Foto - Caja 3")
+image4 = gr.Image(label="Foto - Caja 4")
 
 # Salida de datos
 text1 = gr.Textbox(label="Resultado del Análisis - Caja 1")

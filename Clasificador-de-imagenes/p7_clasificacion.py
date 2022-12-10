@@ -3,12 +3,14 @@ import matplotlib.patches as mpatches
 
 plt.rcParams['image.cmap'] = 'gray'
 
-from skimage import io, filters
+from skimage import io, filters, img_as_ubyte
 import numpy as np
 import cv2
 import os
 from datetime import datetime
 import random
+from skimage.measure import regionprops
+
 
 """
 VARIABLES GLOBALES
@@ -72,7 +74,7 @@ def extraccion(image, hacer_transformacion=False):
     """
     if hacer_transformacion:
         image = transformacion(image)
-    
+
     """
     REDIMENSIONAMIENTO DE LA IMAGEN
     Convertir la imagen de 1220x1080 a 500x400
@@ -92,18 +94,35 @@ def extraccion(image, hacer_transformacion=False):
 
     """
     SEGMENTACION
-    Solo funciona para imagenes cortadas -> porque sino el fondo afecta mucho al objeto dentro de la imagen
     """
-    # ret, th = cv2.threshold(aux, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-    # aux= th
+    ret, th = cv2.threshold(img_as_ubyte(aux), 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
     """
-    EXTRACCION DE RASGOS
-    Para momentos de Hu
+    EXTRACCION DE CARACTERISTICAS / PROPIEDADES
     """
-    hu = cv2.HuMoments(cv2.moments(aux)).flatten()
+    regions = regionprops(th.astype(int))
 
-    return aux, [hu[0], hu[1], hu[3]]
+    # perimetro = regions[0].perimeter
+    # excentricidad = regions[0].eccentricity
+    # prueba = regions[0].equivalent_diameter
+    # prueba = regions[0].euler_number
+    # prueba = regions[0].area
+    # prueba = regions[0].solidity
+    # prueba = regions[0].bbox_area
+    # area = regions[0].area
+
+    eje_mayor = regions[0].major_axis_length
+    eje_menor = regions[0].minor_axis_length
+    hu = regions[0].moments_hu
+
+
+    #return aux, [hu[0], perimetro, area]
+    #return aux, [hu[0], hu[1], hu[3]]
+
+    #return aux, [eje_menor, eje_mayor, hu[0]]
+    #return aux, [eje_menor, eje_mayor, hu[3]]
+
+    return aux, [eje_menor, eje_mayor, hu[1]]
 
 
 def generar_base_datos():
@@ -526,6 +545,7 @@ def mostrar_apilado(orden_apilado):
 def main(foto4, foto3, foto2, foto1):
     orden = []
 
+    # Clasificacion
     test = generar_base_datos()
     resultado1 = clasifica(foto1, test, 1)
     resultado2 = clasifica(foto2, test, 2)
@@ -568,7 +588,7 @@ if __name__ == '__main__':  # Para que se pueda usar sin interfaz
     orden = []
     flag = True
     cant_cajas = 4
-    fotos_cajas = []    # lista con los valores de las fotos a evaluar
+    fotos_cajas = []  # lista con los valores de las fotos a evaluar
     inicio = ""
     print("\n--------------------------------------------------------------------")
     print("Clasificación de Objetos")
@@ -602,8 +622,8 @@ if __name__ == '__main__':  # Para que se pueda usar sin interfaz
 
     # Devolver orden de Apilamiento
     # La prioridad es el metodo KNN por todas las pruebas hechas en eficiencia
-    aux = resultado[0][0].split(":")    # Le quitamos el "KNN:", para ello lo separamos por :
-    orden.append(aux[1])                # Tomamos el segundo termino de la separacion
+    aux = resultado[0][0].split(":")  # Le quitamos el "KNN:", para ello lo separamos por :
+    orden.append(aux[1])  # Tomamos el segundo termino de la separacion
     aux = resultado[1][0].split(":")
     orden.append(aux[1])
     aux = resultado[2][0].split(":")
