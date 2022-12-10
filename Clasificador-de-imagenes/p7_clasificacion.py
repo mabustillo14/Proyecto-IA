@@ -63,13 +63,7 @@ def transformacion(image):
     # Agregar el fondo y la imagen
     image_sin_fondo = background + img1
 
-    """
-    REDIMENSIONAMIENTO DE LA IMAGEN
-    Convertir la imagen de 1220x1080 a 500x400
-    """
-    resized_image = cv2.resize(image_sin_fondo, (500, 400))
-
-    return resized_image
+    return image_sin_fondo
 
 
 def extraccion(image, hacer_transformacion=False):
@@ -78,6 +72,12 @@ def extraccion(image, hacer_transformacion=False):
     """
     if hacer_transformacion:
         image = transformacion(image)
+    
+    """
+    REDIMENSIONAMIENTO DE LA IMAGEN
+    Convertir la imagen de 1220x1080 a 500x400
+    """
+    image = cv2.resize(image, (500, 400))
 
     """
     PRE PROCESAMIENTO
