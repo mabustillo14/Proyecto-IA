@@ -38,7 +38,7 @@ ax3.imshow(bs2)
 ax3.set_title('$\sigma=15$')
 
 # Guardar resultados
-plt.savefig("./pruebas/2_filtracion/filtro_gaussiano.jpg")
+plt.savefig("./pruebas/3_filtracion/filtro_gaussiano.jpg")
 
 
 ############################
@@ -76,7 +76,7 @@ for ax in axes:
 plt.tight_layout()
 
 # Guardar resultados
-plt.savefig("./pruebas/2_filtracion/filtro_sobel_roberts.jpg")
+plt.savefig("./pruebas/3_filtracion/filtro_sobel_roberts.jpg")
 
 ##############################
 ## Filtro Gaussiano + Sobel ##
@@ -100,7 +100,7 @@ ax2.imshow(-bc)
 ax2.set_title("Filtros Gauss + Sobel")
 
 # Guardar resultados
-plt.savefig("./pruebas/2_filtracion/filtro_gauss_sobel.jpg")
+plt.savefig("./pruebas/3_filtracion/filtro_gauss_sobel.jpg")
 
 ##################
 ## Perona Malik ##
@@ -191,7 +191,7 @@ ax2.imshow(G)
 ax2.set_title("Gradiente despues de la difusion")
 
 # Guardar resultados
-plt.savefig("./pruebas/2_filtracion/filtro_perona_malik.jpg")
+plt.savefig("./pruebas/3_filtracion/filtro_perona_malik.jpg")
 
 ##############################################
 ## Filtro Laplace, Median, Frangi y Prewitt ##
@@ -225,4 +225,4 @@ ax4.imshow(median)
 ax4.set_title('Filtro Median')
 
 # Guardar resultados
-plt.savefig("./pruebas/2_filtracion/filtro_frangi_prewitt_laplace_median.jpg")
+plt.savefig("./pruebas/3_filtracion/filtro_frangi_prewitt_laplace_median.jpg")

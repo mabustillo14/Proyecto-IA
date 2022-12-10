@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 import matplotlib.patches as mpatches
+
 plt.rcParams['image.cmap'] = 'gray'
 
 from skimage import io, filters
@@ -9,23 +10,75 @@ import os
 from datetime import datetime
 
 
-def extraccion(image):
+def transformacion(image):
+    """
+    QUITAR PARED DE LA CAJA EN LA IMAGEN
+    """
+    # Determinar dimensiones de la imagen
+    height, width, channels = image.shape
+
+    # x marca hasta donde cortar (osea corta del pixel 0 hasta 700)
+    x = 700
+    crop_img = image[0:height, x:width]
+
+    """
+    QUITAR EL FONDO
+    Convertir el fondo a fondo totalmente blanco
+    """
+    # Determinar nuevamente las dimensiones de la imagen
+    height, width, channels = crop_img.shape
+
+    # Crear una mascara
+    mask = np.zeros(crop_img.shape[:2], np.uint8)
+
+    # Grabar el corte del objeto
+    bgdModel = np.zeros((1, 65), np.float64)
+    fgdModel = np.zeros((1, 65), np.float64)
+
+    # Hard Coding the Rect The object must lie within this rect.
+    rect = (1079, 1079, width - 1, height - 1)
+    cv2.grabCut(crop_img, mask, rect, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_RECT)
+    mask = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+    img1 = crop_img * mask[:, :, np.newaxis]
+
+    # Obtener el fondo
+    background = crop_img - img1
+
+    """
+    Cambiar todos los pixeles en el fondo que no sean de negro a blanco
+    [100,100,100] color de fondo (de la mascara) de la caja donde tome las fotos
+    """
+    background[np.where((background > [100, 100, 100]).all(axis=2))] = [255, 255, 255]
+
+    # Agregar el fondo y la imagen
+    image_sin_fondo = background + img1
+
+    """
+    REDIMENSIONAMIENTO DE LA IMAGEN
+    Convertir la imagen de 1220x1080 a 500x400
+    """
+    resized_image = cv2.resize(image_sin_fondo, (500, 400))
+
+    return resized_image
+
+
+def extraccion(image, hacer_transformacion=False):
     """
     TRANSFORMACION
-    Recordar hacer la transformacion de la imagen con el programa Transformacion.py
     """
-    image = cv2.resize(image, (500, 400))   # Convertir la imagen de 1220x1080 a 500x400
+    if hacer_transformacion:
+        image = transformacion(image)
 
     """
     PRE PROCESAMIENTO
     """
-    aux = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)   # Convertir a escala de grises
+    aux = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # Convertir a escala de grises
 
     """
     FILTRACION
     """
     aux = cv2.GaussianBlur(aux, (3, 3), 0)  # Aplicar filtro gaussiano
-    aux = filters.sobel(aux)                # Aplicar filtro Sobel o Laplaciano
+    aux = filters.sobel(aux)  # Aplicar filtro Sobel o Laplaciano
 
     """
     SEGMENTACION
@@ -73,10 +126,10 @@ def Data_base():
     ##Entrenamiento de la base de datos 
 
     # Cargar path de las imagenes
-    tornillo_path = './Data-Base/YTrain/YTornillos/'
-    tuerca_path = './Data-Base/YTrain/YTuercas/'
-    arandela_path = './Data-Base/YTrain/Arandelas/'
-    clavo_path = './Data-Base/YTrain/Clavos/'
+    tornillo_path = './dataset/transformado/train/Tornillos/'
+    tuerca_path = './dataset/transformado/train/Tuercas/'
+    arandela_path = './dataset/transformado/train/Arandelas/'
+    clavo_path = './dataset/transformado/train/Clavos/'
 
     # Cargar todas las imagenes dentro de una carpeta
     tornillo = []
@@ -161,7 +214,7 @@ def Data_base():
     ax.set_ylabel('componente 2')
     ax.set_zlabel('componente 4')
 
-    plt.savefig("pruebas/6_clasificacion/grafico_base_de_datos.jpg")
+    plt.savefig("pruebas/7_clasificacion/grafico_base_de_datos.jpg")
     # plt.show()
 
     print("Analisis completo de la base de datos de YTrain")
@@ -187,7 +240,7 @@ def clasifica(image, test, numero_caja):
     global datos
     global contador_cajas
 
-    test.image, test.caracteristica = extraccion(image)
+    test.image, test.caracteristica = extraccion(image, hacer_transformacion=True)
     test.pieza = 'Arandela'  # label inicial
 
     ax.scatter(test.caracteristica[0], test.caracteristica[1], test.caracteristica[2], c='k', marker='o')
@@ -280,7 +333,7 @@ def clasifica(image, test, numero_caja):
     ax.set_ylabel('componente 2')
     ax.set_zlabel('componente 4')
 
-    plt.savefig("pruebas/6_clasificacion/means_de_caja_" + str(numero_caja) + ".jpg")
+    plt.savefig("pruebas/7_clasificacion/means_de_caja_" + str(numero_caja) + ".jpg")
 
     # Asignacion, Actualizacion y Convergencia
     tornillo_flag = True
@@ -548,7 +601,7 @@ if __name__ == '__main__':  # Para que se pueda usar sin interfaz
     test = Data_base()
     resultado = []
     for i in range(cant_cajas):
-        nombre = './Data-Base/YEvaluacion/photo' + str(fotos_cajas[cant_cajas - i - 1]) + '.jpg'
+        nombre = './dataset/evaluacion/photo' + str(fotos_cajas[cant_cajas - i - 1]) + '.jpg'
         image = io.imread(nombre)
         resultado.append(clasifica(image, test, i + 1))
 

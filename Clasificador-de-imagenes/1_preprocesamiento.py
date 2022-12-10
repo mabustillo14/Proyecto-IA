@@ -46,7 +46,7 @@ ax_G.imshow(G_tornillo)
 ax_G.set_title('Capa Verde')
 
 # Guardar resultados
-plt.savefig("./pruebas/0_preprocesamiento/descomposion_rgb.jpg")
+plt.savefig("./pruebas/1_preprocesamiento/descomposion_rgb.jpg")
 
 ################################################################
 ## Conversion de RGB a escalas de grises utilizando librerías ##
@@ -78,7 +78,7 @@ ax0.imshow(sk_gray)
 ax0.set_title('WG, WB y WR por skimage')
 
 # Guardar resultados
-plt.savefig("./pruebas/0_preprocesamiento/descomposion_rgb_con_libreria.jpg")
+plt.savefig("./pruebas/1_preprocesamiento/descomposion_rgb_con_libreria.jpg")
 
 ###########################################################################################################
 ## Conversion de RGB a escalas de grises utilizando pesos WG, WR y WB arbitrarios ingresados manualmente ##
@@ -96,4 +96,4 @@ imagen_gris = Image.new('L', foto.size)
 imagen_gris.putdata(promedio)
 
 # Guardar resultados
-imagen_gris.save("./pruebas/0_preprocesamiento/descomposion_rgb_promediados.jpg")
+imagen_gris.save("./pruebas/1_preprocesamiento/descomposion_rgb_promediados.jpg")

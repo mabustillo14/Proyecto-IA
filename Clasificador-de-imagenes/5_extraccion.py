@@ -50,7 +50,7 @@ ax2.set_xlim(0, 256)
 ax2.set_title('Histograma de color para imagen filtrada')
 
 # Guardar resultados
-plt.savefig("./pruebas/4_extraccion/histograma_color.jpg")
+plt.savefig("./pruebas/5_extraccion/histograma_color.jpg")
 
 ###############################################################################################
 ## Comparacion de caracteristicas HOG y HU para las distintas piezas de ferreteria ##

@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 plt.rcParams['image.cmap'] = 'gray'
 
 import numpy as np
-from skimage import io, filters
+from skimage import filters
 from skimage.feature import hog
 import cv2
 import os
@@ -180,7 +180,7 @@ plt.ylabel('Desviacion estandar')
 plt.xlabel('Media aritmetica')
 
 # Guardar resultados
-plt.savefig("./pruebas/5_reduccion/reduccion_dimensionalidad_hog.jpg")
+plt.savefig("./pruebas/6_reduccion/reduccion_dimensionalidad_hog.jpg")
 
 ####################
 ## Momentos de Hu ##
@@ -220,4 +220,4 @@ plt.ylabel('Desviacion estandar')
 plt.xlabel('Media aritmetica')
 
 # Guardar resultados
-plt.savefig("./pruebas/5_reduccion/reduccion_dimensionalidad_hu.jpg")
+plt.savefig("./pruebas/6_reduccion/reduccion_dimensionalidad_hu.jpg")

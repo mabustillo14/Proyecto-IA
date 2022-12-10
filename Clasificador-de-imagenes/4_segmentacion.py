@@ -38,7 +38,7 @@ ax4.imshow(sobel < 0.1)
 ax4.set_title('th=0.1')
 
 # Guardar resultados
-plt.savefig("./pruebas/3_segmentacion/threshold_supervisado.jpg")
+plt.savefig("./pruebas/4_segmentacion/threshold_supervisado.jpg")
 
 #################################
 ## Thresholding NO supervisado ##
@@ -48,4 +48,4 @@ plt.savefig("./pruebas/3_segmentacion/threshold_supervisado.jpg")
 fig, ax = try_all_threshold(sobel, figsize=(10, 10), verbose=False)
 
 # Guardar resultados
-plt.savefig("./pruebas/3_segmentacion/threshold_no_supervisado.jpg")
+plt.savefig("./pruebas/4_segmentacion/threshold_no_supervisado.jpg")

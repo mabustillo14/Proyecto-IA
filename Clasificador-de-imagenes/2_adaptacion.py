@@ -26,7 +26,7 @@ cv2.putText(imagen, texto, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
             (255, 0, 0), 1)
 
 # Guardar resultados
-path = "./pruebas/1_adaptacion/1_adaptacion/"
+path = "./pruebas/2_adaptacion/"
 fileb = "Figura_adaptacion_0.png"
 cv2.imwrite(path + fileb, imagen)
 
@@ -70,7 +70,7 @@ for c in cnts:
     i = i + 1
 
 # Guardar resultados
-path = "./pruebas/1_adaptacion/"
+path = "./pruebas/2_adaptacion/"
 fileb = "Figura_adaptacion_1.png"
 cv2.imwrite(path + fileb, imagen)
 
@@ -98,6 +98,6 @@ x, y, w, h = cv2.boundingRect(ctns[0])  # x,y: coordenada de la parte izquierda 
 crop_img = imagen[y:y + h, x:x + w]
 
 # Guardar resultados
-path = "./pruebas/1_adaptacion/"
+path = "./pruebas/2_adaptacion/"
 fileb = "Figura_adaptacion_2.png"
 cv2.imwrite(path + fileb, crop_img)
