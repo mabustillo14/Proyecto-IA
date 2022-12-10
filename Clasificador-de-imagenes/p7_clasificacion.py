@@ -350,7 +350,7 @@ def clasifica(image, test, numero_caja):
         arandela_data = []
         clavo_data = []
 
-        # ASIGNACION
+        # Asignacion
         for element in datos:
             sum_tornillo = 0
             sum_tuerca = 0
@@ -385,7 +385,7 @@ def clasifica(image, test, numero_caja):
             elif aux == dist_clavo:
                 clavo_data.append(element.caracteristica)
 
-        # ACTUALIZACION
+        # Actualizacion
         sum_tornillo = [0, 0, 0]
         for b in tornillo_data:
             sum_tornillo[0] += b[0]
@@ -455,7 +455,7 @@ def clasifica(image, test, numero_caja):
     print(len(tornillo_data), len(tuerca_data), len(arandela_data), len(clavo_data))
     fig_means
 
-    ##Mean mas cercano
+    # Mean mas cercano
     sum_tornillo = 0
     sum_tuerca = 0
     sum_arandela = 0
@@ -532,8 +532,10 @@ def main(foto4, foto3, foto2, foto1):
     resultado3 = clasifica(foto3, test, 3)
     resultado4 = clasifica(foto4, test, 4)
 
-    # Devolver orden de Apilamiento
-    # La prioridad es el metodo KNN por todas las pruebas hechas en eficiencia
+    """
+    Devolver orden de Apilamiento
+    La prioridad es el metodo KNN por todas las pruebas hechas en eficiencia
+    """
     aux = resultado1[0].split(":")  # Le quitamos el "KNN:", para ello lo separamos por :
     orden.append(aux[1])  # Tomamos el segundo termino de la separacion
     aux = resultado2[0].split(":")
@@ -566,7 +568,7 @@ if __name__ == '__main__':  # Para que se pueda usar sin interfaz
     orden = []
     flag = True
     cant_cajas = 4
-    fotos_cajas = []  # lista con los valores de las fotos a evaluar
+    fotos_cajas = []    # lista con los valores de las fotos a evaluar
     inicio = ""
     print("\n--------------------------------------------------------------------")
     print("Clasificación de Objetos")
@@ -600,8 +602,8 @@ if __name__ == '__main__':  # Para que se pueda usar sin interfaz
 
     # Devolver orden de Apilamiento
     # La prioridad es el metodo KNN por todas las pruebas hechas en eficiencia
-    aux = resultado[0][0].split(":")  # Le quitamos el "KNN:", para ello lo separamos por :
-    orden.append(aux[1])  # Tomamos el segundo termino de la separacion
+    aux = resultado[0][0].split(":")    # Le quitamos el "KNN:", para ello lo separamos por :
+    orden.append(aux[1])                # Tomamos el segundo termino de la separacion
     aux = resultado[1][0].split(":")
     orden.append(aux[1])
     aux = resultado[2][0].split(":")
