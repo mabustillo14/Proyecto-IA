@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import Laberinto as Lab
 from PIL import Image
 
-class nodoo():
+class nodoo(): #A cada punto del mapa le calcula los valores de g, h y f
     def __init__(self, parent=None, position=None):
         self.parent = parent
         self.position = position
@@ -15,28 +15,35 @@ class nodoo():
 
 
 def astar(maze, start, end):
+    #Definimos los nodos inicial y final
     start_node = nodoo(None, start)
     start_node.g = start_node.h = start_node.f = 0
     end_node = nodoo(None, end)
     end_node.g = end_node.h = end_node.f = 0
 
-    open_list = []
+    #Creamos la lista abierta y cerrada para nodos
+    open_list = [] 
     closed_list = []
 
+    #Agregue el cuadrado inicial (o nodo) a la lista abierta.
     open_list.append(start_node)
-
+    
+    # Loop until you find the end
     while len(open_list) > 0:
-
+        
+        #Busque el cuadrado de costo F más bajo en la lista abierta. Nos referimos a esto como el cuadrado actual
         current_node = open_list[0]
         current_index = 0
         for index, item in enumerate(open_list):
             if item.f < current_node.f:
                 current_node = item
                 current_index = index
-
+        
+        # Pop current off open list, add to closed list
         open_list.pop(current_index)
         closed_list.append(current_node)
-
+        
+        # Encontrar el objetivo
         if current_node == end_node:
             path = []
             current = current_node
@@ -44,33 +51,44 @@ def astar(maze, start, end):
                 path.append(current.position)
                 current = current.parent
             return path[::-1] 
-
+        
+        # Generate children
         children = []
-        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0)]: 
+        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0)]: #Solo me puedo mover vertical y horizontalmente
+            
+            # Obtener la posicion del nodo
             node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
-
+            
+            # Asegurarme que el nodo este dentro de las dimensiones del mapa
             if node_position[0] > (len(maze) - 1) or node_position[0] < 0 or node_position[1] > (len(maze[len(maze)-1]) -1) or node_position[1] < 0:
                 continue
-
+            # Asegurarme que estoy en una casilla sin obstaculo
             if maze[node_position[0]][node_position[1]] != 0:
                 continue
-
+             
+            # Crear un nuevo nodo
             new_node = nodoo(current_node, node_position)
-
+            
+            # Agregar el nuevo nodo
             children.append(new_node)
-
+        
+        # Loop through children
         for child in children:
+             # Child is on the closed list
             for closed_child in closed_list:
                 if child == closed_child:
                     continue
 
-            child.g = current_node.g + 1
-            child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2)
-            child.f = child.g + child.h
+             # Create the f, g, and h values
+            child.g = current_node.g + 1 #distancia entre el nodo actual y el nodo inicial
+            child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2) #Distancia Manhattan
+            child.f = child.g + child.h #Costo Total
 
+            # Child is already in the open list
             for open_node in open_list:
                 if child == open_node and child.g > open_node.g:
                     continue
+            # Add the child to the open list
             open_list.append(child)
 
 def MostrarMapa(NombreMapa, titulo, maze):
