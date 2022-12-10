@@ -8,6 +8,16 @@ import numpy as np
 import cv2
 import os
 from datetime import datetime
+import random
+
+"""
+VARIABLES GLOBALES
+Para almacenar los datos y graficar
+"""
+global datos, fig, ax
+datos = []
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 
 
 def transformacion(image):
@@ -96,16 +106,7 @@ def extraccion(image, hacer_transformacion=False):
     return aux, [hu[0], hu[1], hu[3]]
 
 
-global datos
-datos = []
-
-global fig
-fig = plt.figure()
-global ax
-ax = fig.add_subplot(111, projection='3d')
-
-
-def Data_base():
+def generar_base_datos():
     print("\n--------------------------------------------------------------------")
     print("Comienza carga de Data Base")
     print("--------------------------------------------------------------------\n")
@@ -121,9 +122,6 @@ def Data_base():
             self.image = None
             self.caracteristica = []
             self.distancia = 0
-
-    # Analisis de la base de datos (YTrain)
-    ##Entrenamiento de la base de datos 
 
     # Cargar path de las imagenes
     tornillo_path = './dataset/transformado/train/Tornillos/'
@@ -202,7 +200,7 @@ def Data_base():
     print("Clavos OK")
 
     ax.grid(True)
-    ax.set_title("Analisis completo de YTrain")
+    ax.set_title("Analisis completo de carpeta Train")
 
     yellow_patch = mpatches.Patch(color='yellow', label='Tornillo')
     red_patch = mpatches.Patch(color='red', label='Tuerca')
@@ -217,12 +215,10 @@ def Data_base():
     plt.savefig("pruebas/7_clasificacion/grafico_base_de_datos.jpg")
     # plt.show()
 
-    print("Analisis completo de la base de datos de YTrain")
-    print("Cantidad de imagenes analizadas: ")
-    print(len(datos))
+    print("Analisis completo de la base de datos de Train")
+    print("Cantidad de imagenes analizadas: ", len(datos))
 
     # Elemento a evaluar
-    # Recordar aplicar Transformacion.py cuando se quiera evaluar una nueva imagen.
     test = Elemento()
 
     print("--------------------------------------------------------------------\n")
@@ -246,7 +242,9 @@ def clasifica(image, test, numero_caja):
     ax.scatter(test.caracteristica[0], test.caracteristica[1], test.caracteristica[2], c='k', marker='o')
     fig
 
-    # KNN
+    """
+    KNN: K Nearest Neighbors
+    """
     print("\nInicializacion KNN")
     i = 0
     sum = 0
@@ -268,11 +266,13 @@ def clasifica(image, test, numero_caja):
             d = sum
             test.pieza = element.pieza
 
-    print("Prediccion para KNN con K=1: ")
-    print(test.pieza)
+    print("Prediccion para KNN con K=1: ", test.pieza)
     KNN = test.pieza
 
-    # Algoritmo de ordenamiento de burbuja-> lo elegi porque es bastante estable
+    """
+    BUBBLE SORT: Algoritmo de ordenamiento de burbuja
+    Lo elegi porque es bastante estable
+    """
     swap = True
     while swap:
         swap = False
@@ -287,8 +287,9 @@ def clasifica(image, test, numero_caja):
     for i in range(k):
         print(datos[i].pieza)
 
-    # K MEANS
-    import random
+    """
+    K MEANS
+    """
     print("\nInicializacion KMeans")
 
     tornillo_data = []
@@ -336,11 +337,6 @@ def clasifica(image, test, numero_caja):
     plt.savefig("pruebas/7_clasificacion/means_de_caja_" + str(numero_caja) + ".jpg")
 
     # Asignacion, Actualizacion y Convergencia
-    tornillo_flag = True
-    tuerca_flag = True
-    arandela_flag = True
-    clavo_flag = True
-
     tornillo_len = [0, 0, 0]
     tuerca_len = [0, 0, 0]
     arandela_len = [0, 0, 0]
@@ -434,25 +430,16 @@ def clasifica(image, test, numero_caja):
         # print(len(tornillo_data), len(tuerca_data), len(arandela_data), len(clavo_data))
 
         # CONVERGENCIA Y CONDICION DE SALIDA
-
-        if tornillo_mean == tornillo_len:
-            tornillo_flag = False
-        else:
+        if not tornillo_mean == tornillo_len:
             tornillo_len = tornillo_mean
 
-        if tuerca_mean == tuerca_len:
-            tuerca_flag = False
-        else:
+        if not tuerca_mean == tuerca_len:
             tuerca_len = tuerca_mean
 
-        if arandela_mean == arandela_len:
-            arandela_flag = False
-        else:
+        if not arandela_mean == arandela_len:
             arandela_len = arandela_mean
 
-        if clavo_mean == clavo_len:
-            clavo_flag = False
-        else:
+        if not clavo_mean == clavo_len:
             clavo_len = clavo_mean
 
         iter += 1
@@ -506,8 +493,7 @@ def clasifica(image, test, numero_caja):
     elif aux == dist_clavo:
         test.pieza = 'Clavo'
 
-    print("\nPrediccion para KMeans: ")
-    print(test.pieza)
+    print("\nPrediccion para KMeans: ", test.pieza)
     KMEANS = test.pieza
 
     # confidendes = {"KNN": KNN, "KMEANS": KMEANS}
@@ -516,7 +502,7 @@ def clasifica(image, test, numero_caja):
     return respuesta
 
 
-def GenerarArchivo(orden):
+def generar_archivo(orden):
     # Generar un txt con el orden de apilamiento
     file = open("../Apilamiento/datos.txt", "w")
     ahora = datetime.now()
@@ -529,10 +515,18 @@ def GenerarArchivo(orden):
     file.close()
 
 
+def mostrar_apilado(orden_apilado):
+    print("\n\nRepresentación Simbolica del Resultado de la secuencia:")
+    for i in range(len(orden_apilado)):
+        print("\t-------------------------")
+        print("\t|\t", orden_apilado[len(orden_apilado) - 1 - i], " \t|")
+    print("\t=========================\n")
+
+
 def main(foto4, foto3, foto2, foto1):
     orden = []
 
-    test = Data_base()
+    test = generar_base_datos()
     resultado1 = clasifica(foto1, test, 1)
     resultado2 = clasifica(foto2, test, 2)
     resultado3 = clasifica(foto3, test, 3)
@@ -550,7 +544,7 @@ def main(foto4, foto3, foto2, foto1):
     orden.append(aux[1])
 
     # Archivo con el orden de apilamiento
-    GenerarArchivo(orden)
+    generar_archivo(orden)
 
     print("\n--------------------------------------------------------------------")
     print("Conclusiones")
@@ -563,17 +557,9 @@ def main(foto4, foto3, foto2, foto1):
 
     print("\nLa secuencia de apilamiento ascendente es:", orden)
 
-    Mostrar_Apilado(orden)
+    mostrar_apilado(orden)
 
     return resultado4, resultado3, resultado2, resultado1, orden
-
-
-def Mostrar_Apilado(Apilado):
-    print("\n\nRepresentación Simbolica del Resultado de la secuencia:")
-    for i in range(len(Apilado)):
-        print("\t-------------------------")
-        print("\t|\t", Apilado[len(Apilado) - 1 - i], " \t|")
-    print("\t=========================\n")
 
 
 if __name__ == '__main__':  # Para que se pueda usar sin interfaz
@@ -598,7 +584,7 @@ if __name__ == '__main__':  # Para que se pueda usar sin interfaz
         numero = input(text)
         fotos_cajas.append(numero)
 
-    test = Data_base()
+    test = generar_base_datos()
     resultado = []
     for i in range(cant_cajas):
         nombre = './dataset/evaluacion/photo' + str(fotos_cajas[cant_cajas - i - 1]) + '.jpg'
@@ -623,9 +609,9 @@ if __name__ == '__main__':  # Para que se pueda usar sin interfaz
     aux = resultado[3][0].split(":")
     orden.append(aux[1])
 
-    GenerarArchivo(orden)
+    generar_archivo(orden)
 
     print("\nLa secuencia de apilamiento ascendente es:", orden)
 
-    Mostrar_Apilado(orden)
+    mostrar_apilado(orden)
     print("\nFin de la Ejecución")
