@@ -30,7 +30,7 @@ def transformacion(image):
     height, width, channels = image.shape
 
     # x marca hasta donde cortar (osea corta del pixel 0 hasta 700)
-    x = 700
+    x = 50
     crop_img = image[0:height, x:width]
 
     """
@@ -65,7 +65,20 @@ def transformacion(image):
     # Agregar el fondo y la imagen
     image_sin_fondo = background + img1
 
-    return image_sin_fondo
+
+    # Redimensionamiento de la imagen de entrada
+    fixed_size = tuple((500, 400))
+    resized_image = cv2.resize(image_sin_fondo, fixed_size)
+
+    # Determinar dimensiones de la imagen
+    height, width, channels = resized_image.shape
+
+    # x marca hasta donde cortar (osea corta del pixel 0 hasta 700)
+    y = 70
+    crop_img = resized_image[0:height-y, 0:width]
+    
+    return crop_img
+
 
 
 def extraccion(image, hacer_transformacion=False):
@@ -102,14 +115,14 @@ def extraccion(image, hacer_transformacion=False):
     """
     regions = regionprops(th.astype(int))
 
-    # perimetro = regions[0].perimeter
-    # excentricidad = regions[0].eccentricity
-    # prueba = regions[0].equivalent_diameter
-    # prueba = regions[0].euler_number
-    # prueba = regions[0].area
-    # prueba = regions[0].solidity
-    # prueba = regions[0].bbox_area
-    # area = regions[0].area
+    perimetro = regions[0].perimeter
+    excentricidad = regions[0].eccentricity
+    #prueba = regions[0].equivalent_diameter
+    #prueba = regions[0].euler_number
+    #prueba = regions[0].area
+    #prueba = regions[0].solidity
+    prueba = regions[0].bbox_area
+    area = regions[0].area
 
     eje_mayor = regions[0].major_axis_length
     eje_menor = regions[0].minor_axis_length
@@ -121,8 +134,9 @@ def extraccion(image, hacer_transformacion=False):
 
     #return aux, [eje_menor, eje_mayor, hu[0]]
     #return aux, [eje_menor, eje_mayor, hu[3]]
+    #return aux, [eje_menor, hu[0], excentricidad ]
 
-    return aux, [eje_menor, eje_mayor, hu[1]]
+    return aux, [eje_menor, eje_mayor, excentricidad]
 
 
 def generar_base_datos():
