@@ -74,7 +74,7 @@ def transformacion(image):
     height, width, channels = resized_image.shape
 
     # x marca hasta donde cortar (osea corta del pixel 0 hasta 700)
-    y = 70
+    y = 100
     crop_img = resized_image[0:height-y, 0:width]
     
     return crop_img
@@ -115,29 +115,29 @@ def extraccion(image, hacer_transformacion=False):
     """
     regions = regionprops(th.astype(int))
 
-    perimetro = regions[0].perimeter
-    excentricidad = regions[0].eccentricity
-    #prueba = regions[0].equivalent_diameter
-    #prueba = regions[0].euler_number
-    #prueba = regions[0].area
-    #prueba = regions[0].solidity
-    prueba = regions[0].bbox_area
-    area = regions[0].area
-
+    # Propiedades
+    #perimetro = regions[0].perimeter
+    #excentricidad = regions[0].eccentricity
+    #equivalent_diameter = regions[0].equivalent_diameter
+    #euler_number = regions[0].euler_number
+    #solidity = regions[0].solidity
+    #prueba = regions[0].bbox_area
+    #area = regions[0].area
     eje_mayor = regions[0].major_axis_length
     eje_menor = regions[0].minor_axis_length
     hu = regions[0].moments_hu
 
-
+    # RETORNAR VALORES
+    # Otras combinaciones - No validas por rendimiento
     #return aux, [hu[0], perimetro, area]
     #return aux, [hu[0], hu[1], hu[3]]
-
-    #return aux, [eje_menor, eje_mayor, hu[0]]
     #return aux, [eje_menor, eje_mayor, hu[3]]
     #return aux, [eje_menor, hu[0], excentricidad ]
 
-    return aux, [eje_menor, eje_mayor, excentricidad]
-
+    #COMBINACIONES QUE FUNCIONAN CON EFICIENCIA
+    #return aux, [eje_menor, eje_mayor, excentricidad]
+    return aux, [eje_menor, eje_mayor, hu[0]]
+    
 
 def generar_base_datos():
     print("\n--------------------------------------------------------------------")
@@ -529,12 +529,13 @@ def clasifica(image, test, numero_caja):
     print("\nPrediccion para KMeans: ", test.pieza)
     KMEANS = test.pieza
 
-    # confidendes = {"KNN": KNN, "KMEANS": KMEANS}
+    # Devolver resultados
     respuesta.append("KNN: " + KNN)
     respuesta.append("KMEANS: " + KMEANS)
     return respuesta
 
 
+# Generar archivo que se utiliza en la segunda etapa
 def generar_archivo(orden):
     # Generar un txt con el orden de apilamiento
     file = open("../Apilamiento/datos.txt", "w")
@@ -556,6 +557,7 @@ def mostrar_apilado(orden_apilado):
     print("\t=========================\n")
 
 
+# Fragmento de codigo principal, aplica para GUI y interfaz por consola
 def main(foto4, foto3, foto2, foto1):
     orden = []
 
@@ -598,7 +600,7 @@ def main(foto4, foto3, foto2, foto1):
     return resultado4, resultado3, resultado2, resultado1, orden
 
 
-if __name__ == '__main__':  # Para que se pueda usar sin interfaz
+if __name__ == '__main__':  # Para que se pueda usar sin interfaz GUI
     orden = []
     flag = True
     cant_cajas = 4

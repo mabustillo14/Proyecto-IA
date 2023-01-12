@@ -13,6 +13,7 @@ def Transformacion(nombre, input_path, output_path):
     #input_path = "ejemplos/arandela_original.jpg"
     input_path+=nombre
     imagen = cv2.imread(input_path)
+    cv2.imwrite("./pruebas/0_transformacion/foto_original.jpg", imagen)
 
     # Determinar dimensiones de la imagen
     height, width, channels = imagen.shape
@@ -22,9 +23,7 @@ def Transformacion(nombre, input_path, output_path):
     crop_img = imagen[0:height, x:width]
 
     # Guardar resultados
-    #cv2.imwrite("./pruebas/0_transformacion/quitar_pared_caja.jpg", crop_img)
-    #cv2.imwrite(output_path, crop_img)
-
+    cv2.imwrite("./pruebas/0_transformacion/quitar_pared_caja.jpg", crop_img)
 
     ################################################################
     ## Quitar fondo: convertir el fondo a fondo totalmente blanco ##
@@ -59,7 +58,7 @@ def Transformacion(nombre, input_path, output_path):
     resized_image_sin_fondo = background + img1
 
     # Guardar resultados
-    #cv2.imwrite("./pruebas/0_transformacion/quitar_pared_caja_sin_fondo.jpg", resized_image_sin_fondo)
+    cv2.imwrite("./pruebas/0_transformacion/quitar_pared_caja_sin_fondo.jpg", resized_image_sin_fondo)
     
     ##############################
     ## Redimension de la imagen ##
@@ -70,7 +69,7 @@ def Transformacion(nombre, input_path, output_path):
     resized_image = cv2.resize(resized_image_sin_fondo, fixed_size)
 
     # Guardar resultados
-    #cv2.imwrite("./pruebas/0_transformacion/quitar_pared_caja_sin_fondo_redimensionada.jpg", resized_image)
+    cv2.imwrite("./pruebas/0_transformacion/quitar_pared_caja_sin_fondo_redimensionada.jpg", resized_image)
     cv2.imwrite(output_path + nombre, resized_image)
 
 
@@ -80,46 +79,38 @@ def Transformacion(nombre, input_path, output_path):
     height, width, channels = imagen.shape
 
     # x marca hasta donde cortar (osea corta del pixel 0 hasta 700)
-    y = 70
+    y = 100
     crop_img = imagen[0:height-y, 0:width]
     cv2.imwrite(output_path + nombre, crop_img)
-
-
-
-from rembg import remove
-from PIL import Image
-global contador
-contador = 0
-def sinFondo(nombre,input_path, output_path):
-
-    global contador
-    
-    input_path += nombre
-    output_path += "photo" + str(contador)+ ".png"
-    contador += 1
-    input = Image.open(input_path)
-    output = remove(input)
-    output.save(output_path)
-
-    imagen = cv2.imread(output_path)
-    # Redimensionamiento de la imagen de entrada
-    fixed_size = tuple((500, 400))
-    resized_image = cv2.resize(imagen, fixed_size)
-    cv2.imwrite(output_path, resized_image)
+    cv2.imwrite("./pruebas/0_transformacion/quitar_pared_caja_sin_fondo_redimensionada_recortada.jpg", crop_img)
 
 
 
 if __name__ == '__main__':  # Para que se pueda usar sin interfaz
     input_path="./dataset/original/train/"
     carpetas = os.listdir( input_path )
-    
-    # This would print all the files and directories
-    #for i in range(len(carpetas)):
-    print(carpetas)
-    input_path = "./dataset/original/train/" + carpetas[2] +"/"
-    output_path = "./dataset/transformado/train/" + carpetas[2] +"/"
-    dirs = os.listdir(input_path )
-    for file in dirs:
+    #0-Arandelas 1-Clavos 2-Tornillos 3-Tuercas
+    #carpetas = ["Arandelas"]
+    #carpetas = ["Clavos"]
+    #carpetas = ["Tornillos"]
+    #carpetas = ["Tuercas"]
+
+    # Para transformar todas las carpetas de fotos
+    for i in range(len(carpetas)):
+        input_path = "./dataset/original/train/" + carpetas[i] +"/"
+        output_path = "./dataset/transformado/train/" + carpetas[i] +"/"
+        dirs_input = os.listdir(input_path)
+        dirs_output = os.listdir(output_path)
+        
+        print("Se comenzo la transformacion de :", carpetas[i])
+
+        for j in range(len(dirs_output)):
+            dirs_input = list(filter((dirs_output[j]).__ne__, dirs_input))
+
+
+        for file in dirs_input:
             Transformacion(file, input_path, output_path)
             print(file)
-    print(carpetas[1], " Transformada")    
+        
+        print(carpetas[i], " Transformada")    
+    
