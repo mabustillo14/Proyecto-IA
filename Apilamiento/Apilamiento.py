@@ -27,97 +27,107 @@ def Mostrar_Apilado(Apilado):
 
 
 def Solucion(Posicion_Inicial,Caja_1,Caja_2,Caja_3,Caja_4): #Secuencia de pasos a seguir
-    secuencia_objetivo = [Caja_4,Caja_3,Caja_2,Caja_1] #Posicion Final
-    mesas = ["mesa A","mesa B", "mesa C", "mesa D"]
 
-    #Validamos los datos ingresados
-    #Convertimos la lista en un ser donde no toma elementos repetidos
-    if(len(secuencia_objetivo) == len(set(secuencia_objetivo))):#La secuencia tiene la misma cantidad de componentes de la posicion inicial y no se repite ninguna
-       
-        #Auxiliares
-        Orden = [] #Como estan apoyadas en la mesa
-        pie = Posicion_Inicial.index(Caja_4)#La mesa sobre donde esta el inicio de la nueva torre
+    if(Caja_1 != None) and (Caja_2 != None) and (Caja_3 != None) and (Caja_4 != None): # Cada opcion tiene una selección
 
-        #Añadir las Condiciones del Problema
-        inicio = "Sobre(" +Posicion_Inicial[0] + "," +  mesas[0]+"), "
-        objetivo = "Sobre(" +secuencia_objetivo[0] + "," +  mesas[pie]+"), "
-        objetos = "Caja("+Posicion_Inicial[0] +"), "
-        superficies = mesas[0] +", "
+        secuencia_objetivo = [Caja_4,Caja_3,Caja_2,Caja_1] #Posicion Final
+        mesas = ["mesa A","mesa B", "mesa C", "mesa D"]
 
-        #Salida: Secuencia Solución y Costo 
-        secuencia = ""
-        costo = 0
         
-        for i  in range(len(Posicion_Inicial)-1):
-            #Anadir Condiciones Iniciales
-            inicio += "Sobre(" + Posicion_Inicial[i+1] + "," + Posicion_Inicial[i] + "), "
-            #Anadir el Objetivo del problema
-            objetivo += "Sobre(" + secuencia_objetivo[i+1] + "," + secuencia_objetivo[i] + "), "
-            objetos += "Caja("+Posicion_Inicial[i+1] +"), "
-            superficies += mesas[i+1] + ", "
-        objetos += superficies + " Brazo"
-        inicio += "Libre(" + secuencia_objetivo[len(secuencia_objetivo)-1] + "), Libre(Brazo)"
 
-        #Mostrar por pantalla Condiciones Iniciales
-        print("\n--------------------------------------------------------------------")
-        print("PROPIEDADES:")
-        print("\tObjetos: " + objetos )
-        print("\tInicio: " + inicio)
-        print("\tObjetivo: " + objetivo)
+        #Validamos los datos ingresados
+        #Convertimos la lista en un ser donde no toma elementos repetidos
+        if(len(secuencia_objetivo) == len(set(secuencia_objetivo))):#La secuencia tiene la misma cantidad de componentes de la posicion inicial y no se repite ninguna
+        
+            #Auxiliares
+            Orden = [] #Como estan apoyadas en la mesa
+            pie = Posicion_Inicial.index(Caja_4)#La mesa sobre donde esta el inicio de la nueva torre
 
-        #Mostrar las Funciones disponibles
-        print("\n--------------------------------------------------------------------")
-        print("ACCIONES:")
-        Desapilar("x","y")
-        Sujetar("x")
-        Soltar("x", "mesa")
-        Apilar("x", "y")
+            #Añadir las Condiciones del Problema
+            inicio = "Sobre(" +Posicion_Inicial[0] + "," +  mesas[0]+"), "
+            objetivo = "Sobre(" +secuencia_objetivo[0] + "," +  mesas[pie]+"), "
+            objetos = "Caja("+Posicion_Inicial[0] +"), "
+            superficies = mesas[0] +", "
 
-        #Poner todas las cajas sobre la mesa
-        for i in range(len(Posicion_Inicial)-1):
-            mover_pieza = Posicion_Inicial[len(Posicion_Inicial)-1-i]
-            pieza_apoyada = Posicion_Inicial[len(Posicion_Inicial)-2-i]
-            secuencia += "Desapilar(" + mover_pieza + "," + pieza_apoyada+"), "
-            costo +=1
-            #Desapilar(mover_pieza, pieza_apoyada)
-            secuencia += "Sujetar(" + mover_pieza + "), "
-            costo +=1
-            secuencia += "Soltar(" + mover_pieza + ","+ mesas[len(mesas)-i-1]+"), "
-            costo +=1
-            Orden.append(Posicion_Inicial[i])
+            #Salida: Secuencia Solución y Costo 
+            secuencia = ""
+            costo = 0
             
-        #Secuencia de Apilamiento para obtener la posicion final
-        flag = True
-        i=1 #Porque la base del nuevo apilado esta sobre la mesa
-        while (flag):
-            if(i == len(secuencia_objetivo)-1):
-                flag = False
+            for i  in range(len(Posicion_Inicial)-1):
+                #Anadir Condiciones Iniciales
+                inicio += "Sobre(" + Posicion_Inicial[i+1] + "," + Posicion_Inicial[i] + "), "
+                #Anadir el Objetivo del problema
+                objetivo += "Sobre(" + secuencia_objetivo[i+1] + "," + secuencia_objetivo[i] + "), "
+                objetos += "Caja("+Posicion_Inicial[i+1] +"), "
+                superficies += mesas[i+1] + ", "
+            objetos += superficies + " Brazo"
+            inicio += "Libre(" + secuencia_objetivo[len(secuencia_objetivo)-1] + "), Libre(Brazo)"
 
-            for j in range(len(Orden)):
-                if(secuencia_objetivo[i]==Orden[j]):
-                    secuencia += "Sujetar(" + Orden[j] + "), "
-                    costo +=1
-                    #Sujetar(Orden[j])
-                    
-                    secuencia += "Apilar(" + Orden[j] + "," + secuencia_objetivo[i-1] + "), "
-                    costo +=1
-                    #Apilar(Orden[j], Posicion_Final[i-1])
-                    ##Plan.append("Poner " + Orden[j] + " sobre " + Posicion_Final[i-1])
-            i+=1
+            #Mostrar por pantalla Condiciones Iniciales
+            print("\n--------------------------------------------------------------------")
+            print("PROPIEDADES:")
+            print("\tObjetos: " + objetos )
+            print("\tInicio: " + inicio)
+            print("\tObjetivo: " + objetivo)
 
-        print("\n--------------------------------------------------------------------")
-        print("OUTPUTS: ")
-        print("Secuencia Solución: ")
-        print(secuencia)
-        print("\tCantidad de Movimientos: " + str(costo) + " Movimientos"  )
-        
-        print("\n--------------------------------------------------------------------")
-        Mostrar_Apilado(secuencia_objetivo)
-           
-        return objetos, inicio, objetivo, secuencia, str(costo) + " Movimientos"
+            #Mostrar las Funciones disponibles
+            print("\n--------------------------------------------------------------------")
+            print("ACCIONES:")
+            Desapilar("x","y")
+            Sujetar("x")
+            Soltar("x", "mesa")
+            Apilar("x", "y")
+
+            # Verificar si el apilamiento inicial es igual al final
+            if(Posicion_Inicial == secuencia_objetivo):
+                return objetos, inicio, objetivo, "No hay movimientos", str(0) + " Movimientos"
+
+            #Poner todas las cajas sobre la mesa
+            for i in range(len(Posicion_Inicial)-1):
+                mover_pieza = Posicion_Inicial[len(Posicion_Inicial)-1-i]
+                pieza_apoyada = Posicion_Inicial[len(Posicion_Inicial)-2-i]
+                secuencia += "Desapilar(" + mover_pieza + "," + pieza_apoyada+") \n"
+                costo +=1
+                #Desapilar(mover_pieza, pieza_apoyada)
+                secuencia += "Sujetar(" + mover_pieza + ") \n"
+                costo +=1
+                secuencia += "Soltar(" + mover_pieza + ","+ mesas[len(mesas)-i-1]+") \n"
+                costo +=1
+                Orden.append(Posicion_Inicial[i])
+                
+            #Secuencia de Apilamiento para obtener la posicion final
+            flag = True
+            i=1 #Porque la base del nuevo apilado esta sobre la mesa
+            while (flag):
+                if(i == len(secuencia_objetivo)-1):
+                    flag = False
+
+                for j in range(len(Orden)):
+                    if(secuencia_objetivo[i]==Orden[j]):
+                        secuencia += "Sujetar(" + Orden[j] + ") \n"
+                        costo +=1
+                        #Sujetar(Orden[j])
+                        
+                        secuencia += "Apilar(" + Orden[j] + "," + secuencia_objetivo[i-1] + ") \n"
+                        costo +=1
+                        #Apilar(Orden[j], Posicion_Final[i-1])
+                        ##Plan.append("Poner " + Orden[j] + " sobre " + Posicion_Final[i-1])
+                i+=1
+
+            print("\n--------------------------------------------------------------------")
+            print("OUTPUTS: ")
+            print("Secuencia Solución: ")
+            print(secuencia)
+            print("\tCantidad de Movimientos: " + str(costo) + " Movimientos"  )
+            
+            print("\n--------------------------------------------------------------------")
+            Mostrar_Apilado(secuencia_objetivo)
+            
+            return objetos, inicio, objetivo, secuencia, str(costo) + " Movimientos"
+        else:
+            return ("Error - Intente de nuevo ingresar un orden de apilamiento válido\n"), None, None, None, None
     else:
-        return ("Error - Intente de nuevo ingresar un orden de apilamiento valido\n"), None, None, None, None
-
+        return ("Error - Rellene todos los campos\n"), None, None, None, None
 
 
 if __name__ == '__main__': #Para que se pueda usar sin interfaz

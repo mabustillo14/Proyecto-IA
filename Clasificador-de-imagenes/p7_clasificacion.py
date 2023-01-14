@@ -598,6 +598,7 @@ def main(foto4, foto3, foto2, foto1):
     mostrar_apilado(orden)
 
     return resultado4, resultado3, resultado2, resultado1, orden
+    
 
 
 if __name__ == '__main__':  # Para que se pueda usar sin interfaz GUI
