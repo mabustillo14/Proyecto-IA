@@ -18,7 +18,7 @@ def InstruccionesApilamiento():
     for i in range(cant_cajas - 1):
         InstruccionesApilamiento_text += "Sobre(Caja " + str(cant_cajas - i) + ",Caja " + str(cant_cajas - 1 - i) + "), "
     InstruccionesApilamiento_text += "Sobre(Caja 1, Mesa)"
-    return "**Orden de apilamiento:** " + InstruccionesApilamiento_text
+    return "**Orden de apilamiento:** " + InstruccionesApilamiento_text # Orden descendente
 
 # Extraer los objetos del txt
 with open("datos.txt") as archivo:
@@ -35,7 +35,7 @@ for i in range(cant_cajas):
     inputs.append(gr.Radio(Posicion_Inicial, label=titulo))
    
 
-# Obtener el orden de apilamiento inicial
+# Obtener el orden de apilamiento inicial - Orden ascendente
 ApiladoInicial = "Sobre(" +Posicion_Inicial[0] + ",mesa A), "
 for i  in range(cant_cajas-1):
     #Anadir Condiciones Iniciales
