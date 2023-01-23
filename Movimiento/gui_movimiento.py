@@ -4,7 +4,7 @@ Hacemos uso de Gradio: pip3 install gradio
 """
 
 import gradio as gr
-from A_estrella import solucion
+from A_estrella import solucion, MostrarMapa
 import Laberinto as Lab
 
 # Obtener caracteristicas del Laberinto
@@ -13,6 +13,7 @@ val_y=len(maze) -1      # Alto de laberinto
 val_x=len(maze[0]) -1   # Ancho del laberinto
 
 # Mostar el Mapa por pantalla
+MostrarMapa('mapa.png','Mapa', maze)
 
 # Descripción del Header
 title = "Resolución de Laberinto 🗺️"
