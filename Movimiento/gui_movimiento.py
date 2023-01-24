@@ -27,10 +27,10 @@ article += '**Mario Bustillo 2023 🚀** | [Github](https://github.com/mabustill
 enable_queue=False
 
 # Entrada de datos
-text1 = gr.Textbox(label="Coordena X - Punto Inicio")
-text2 = gr.Textbox(label="Coordena Y - Punto Inicio")
-text3 = gr.Textbox(label="Coordena X - Punto Final")
-text4 = gr.Textbox(label="Coordena Y - Punto Final")
+text1 = gr.Textbox(label="Coordena X - Punto Inicio") #Ax
+text2 = gr.Textbox(label="Coordena Y - Punto Inicio") #Ay
+text3 = gr.Textbox(label="Coordena X - Punto Final") #Bx
+text4 = gr.Textbox(label="Coordena Y - Punto Final") #By
 
 # Salida de datos
 text5 = gr.Textbox(label="Secuencia Solución")

@@ -129,8 +129,9 @@ def solucion(Ax, Ay, Bx, By):
     if validacion_coordenadas(Ax, Ay, Bx, By, maze):
     
         # Establecer los puntos de comienzo y fin
-        PuntoStart = (Ax, Ay) # 0,0
-        PuntoEnd = (Bx, By) #7,7
+        # El programa lee las coordenadas como (y,x)
+        PuntoStart = (Ay, Ax) # 0,0
+        PuntoEnd = (By, Bx) #7,7
         # PuntoStart = (2,2) # 0,0
         # PuntoEnd = (16,16) # 7,7
 
