@@ -18,8 +18,8 @@ def InstruccionesApilamiento():
 
 # Descripción del Header
 title = "Clasificación 🔍🚀"
-description = '**Input:** Orden de Apilamiento Objetivo. <br>'
-description += '**Output:** Propiedades del Problema, Secuencia en Lenguaje STRIPS , Cantidad de Movimientos <br>' 
+description = '**Input:** Pieza representativa de cada una de las cajas, según el orden en que estan apiladas. <br>'
+description += '**Output:** Identificación del contenido de cada una de las cajas y orden de apilamiento ascendente. <br>' 
 description += InstruccionesApilamiento()
 
 # Descripción del Footer

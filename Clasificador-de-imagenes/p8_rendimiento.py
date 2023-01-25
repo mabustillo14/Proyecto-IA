@@ -12,6 +12,9 @@ import random
 from skimage.measure import regionprops
 
 
+# Llamar las funciones de clasificacion de imagenes desde p7_clasificacion.py
+import p7_clasificacion as clasificacion
+
 """
 VARIABLES GLOBALES
 Para almacenar los datos y graficar
@@ -20,123 +23,6 @@ global datos, fig, ax
 datos = []
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-
-
-def transformacion(image):
-    """
-    QUITAR PARED DE LA CAJA EN LA IMAGEN
-    """
-    # Determinar dimensiones de la imagen
-    height, width, channels = image.shape
-
-    # x marca hasta donde cortar (osea corta del pixel 0 hasta 700)
-    x = 50
-    crop_img = image[0:height, x:width]
-
-    """
-    QUITAR EL FONDO
-    Convertir el fondo a fondo totalmente blanco
-    """
-    # Determinar nuevamente las dimensiones de la imagen
-    height, width, channels = crop_img.shape
-
-    # Crear una mascara
-    mask = np.zeros(crop_img.shape[:2], np.uint8)
-
-    # Grabar el corte del objeto
-    bgdModel = np.zeros((1, 65), np.float64)
-    fgdModel = np.zeros((1, 65), np.float64)
-
-    # Hard Coding the Rect The object must lie within this rect.
-    rect = (1079, 1079, width - 1, height - 1)
-    cv2.grabCut(crop_img, mask, rect, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_RECT)
-    mask = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
-    img1 = crop_img * mask[:, :, np.newaxis]
-
-    # Obtener el fondo
-    background = crop_img - img1
-
-    """
-    Cambiar todos los pixeles en el fondo que no sean de negro a blanco
-    [100,100,100] color de fondo (de la mascara) de la caja donde tome las fotos
-    """
-    background[np.where((background > [100, 100, 100]).all(axis=2))] = [255, 255, 255]
-
-    # Agregar el fondo y la imagen
-    image_sin_fondo = background + img1
-
-
-    # Redimensionamiento de la imagen de entrada
-    fixed_size = tuple((500, 400))
-    resized_image = cv2.resize(image_sin_fondo, fixed_size)
-
-    # Determinar dimensiones de la imagen
-    height, width, channels = resized_image.shape
-
-    # x marca hasta donde cortar (osea corta del pixel 0 hasta 700)
-    y = 100
-    crop_img = resized_image[0:height-y, 0:width]
-    
-    return crop_img
-
-
-
-def extraccion(image, hacer_transformacion=False):
-    """
-    TRANSFORMACION
-    """
-    if hacer_transformacion:
-        image = transformacion(image)
-
-    """
-    REDIMENSIONAMIENTO DE LA IMAGEN
-    Convertir la imagen de 1220x1080 a 500x400
-    """
-    image = cv2.resize(image, (500, 400))
-
-    """
-    PRE PROCESAMIENTO
-    """
-    aux = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # Convertir a escala de grises
-
-    """
-    FILTRACION
-    """
-    aux = cv2.GaussianBlur(aux, (3, 3), 0)  # Aplicar filtro gaussiano
-    aux = filters.sobel(aux)  # Aplicar filtro Sobel o Laplaciano
-
-    """
-    SEGMENTACION
-    """
-    ret, th = cv2.threshold(img_as_ubyte(aux), 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-    """
-    EXTRACCION DE CARACTERISTICAS / PROPIEDADES
-    """
-    regions = regionprops(th.astype(int))
-
-    # Propiedades
-    #perimetro = regions[0].perimeter
-    #excentricidad = regions[0].eccentricity
-    #equivalent_diameter = regions[0].equivalent_diameter
-    #euler_number = regions[0].euler_number
-    #solidity = regions[0].solidity
-    #prueba = regions[0].bbox_area
-    #area = regions[0].area
-    eje_mayor = regions[0].major_axis_length
-    eje_menor = regions[0].minor_axis_length
-    hu = regions[0].moments_hu
-
-    # RETORNAR VALORES
-    # Otras combinaciones - No validas por rendimiento
-    #return aux, [hu[0], perimetro, area]
-    #return aux, [hu[0], hu[1], hu[3]]
-    #return aux, [eje_menor, eje_mayor, hu[3]]
-    #return aux, [eje_menor, hu[0], excentricidad ]
-
-    #COMBINACIONES QUE FUNCIONAN CON EFICIENCIA
-    #return aux, [eje_menor, eje_mayor, excentricidad]
-    return aux, [eje_menor, eje_mayor, hu[0]]
 
 
 def generar_base_datos():
@@ -189,7 +75,7 @@ def generar_base_datos():
     for objeto in tornillo:
         datos.append(Elemento())
         datos[i].pieza = 'Tornillo'
-        datos[i].image, datos[i].caracteristica = extraccion(objeto)
+        datos[i].image, datos[i].caracteristica = clasificacion.extraccion(objeto)
         ax.scatter(datos[i].caracteristica[0], datos[i].caracteristica[1], datos[i].caracteristica[2], c='y',
                    marker='o')
         i += 1
@@ -201,7 +87,7 @@ def generar_base_datos():
     for objeto in tuerca:
         datos.append(Elemento())
         datos[i].pieza = 'Tuerca'
-        datos[i].image, datos[i].caracteristica = extraccion(objeto)
+        datos[i].image, datos[i].caracteristica = clasificacion.extraccion(objeto)
         ax.scatter(datos[i].caracteristica[0], datos[i].caracteristica[1], datos[i].caracteristica[2], c='r',
                    marker='o')
         i += 1
@@ -213,7 +99,7 @@ def generar_base_datos():
     for objeto in arandela:
         datos.append(Elemento())
         datos[i].pieza = 'Arandela'
-        datos[i].image, datos[i].caracteristica = extraccion(objeto)
+        datos[i].image, datos[i].caracteristica = clasificacion.extraccion(objeto)
         ax.scatter(datos[i].caracteristica[0], datos[i].caracteristica[1], datos[i].caracteristica[2], c='b',
                    marker='o')
         i += 1
@@ -225,7 +111,7 @@ def generar_base_datos():
     for objeto in clavo:
         datos.append(Elemento())
         datos[i].pieza = 'Clavo'
-        datos[i].image, datos[i].caracteristica = extraccion(objeto)
+        datos[i].image, datos[i].caracteristica = clasificacion.extraccion(objeto)
         ax.scatter(datos[i].caracteristica[0], datos[i].caracteristica[1], datos[i].caracteristica[2], c='g',
                    marker='o')
         i += 1
@@ -242,7 +128,7 @@ def generar_base_datos():
     return test
 
 
-def clasifica(image, test):
+def clasifica(image, test, K):
     
     respuesta = []
     global fig
@@ -250,7 +136,7 @@ def clasifica(image, test):
     global datos
     global contador_cajas
 
-    test.image, test.caracteristica = extraccion(image, hacer_transformacion=True)
+    test.image, test.caracteristica =  clasificacion.extraccion(image, hacer_transformacion=True)
     test.pieza = 'Arandela'  # label inicial
 
     """
@@ -293,6 +179,25 @@ def clasifica(image, test):
                 datos[i] = datos[i - 1]
                 datos[i - 1] = aux
                 swap = True
+
+    """
+    KNN para un valor K dado
+    """
+    vect_contador = [] # Cantidad de veces que se repite una categoria
+
+    # Comienza el analisis para distintos valores de K    
+    for i in range(K):
+        vect_contador.append(0)   
+
+        for j in range(K):
+            if(datos[i].pieza == datos[j].pieza):
+                vect_contador[i] +=1
+
+    maxContador = max(vect_contador)
+    indice_maxContador = vect_contador.index(maxContador)
+    KNN_Multiple = datos[indice_maxContador].pieza
+
+    #print("KNN Multiple (K=9): ", caracteristica)
 
     """
     K MEANS
@@ -468,20 +373,53 @@ def clasifica(image, test):
     #print("\nPrediccion para KMeans: ", test.pieza)
     KMEANS = test.pieza
 
-    return KNN, KMEANS
+    return KNN, KNN_Multiple, KMEANS
 
+def MostrarResultados(cont_piezas, vect_KNN, cont_KMEANS):
+    print("--------------------------------------------------------------------\n")
+    print("\nResultados:")
+    print("\tSe analizaron " + str(cont_piezas) + " piezas")
+    for i in range(len(vect_KNN)-1):
+        print("\tSe acertaron: " + str(vect_KNN[i]) + " piezas con KNN con K=" + str(i+1))
+    print("\tSe acertaron: " + str(cont_KMEANS) + " piezas con KMEANS")
 
-def main():
-    cont_KNN = 0
-    cont_KMEANS = 0
-    cont_piezas = 0
-    estado_KNN = ""
-    estado_KMEANS = ""
+    print("\nPorcentajes:")
+
+    for i in range(len(vect_KNN)-1):
+        print("\tPorcentaje de certeza KNN con K=" + str(i+1) + ": " + str(vect_KNN[i]/cont_piezas*100) + "%")
+
+    print("\tPorcentaje de certeza KMEANS: " + str(cont_KMEANS/cont_piezas*100) + "%")
+
+"""
+Calculo de Rendimiento
+"""
+def rendimiento(val_K):
+    K = val_K # Establecer rango de busqueda de O - K
+   
+    # Nombre de las piezas y carpetas
     piezas = ["Arandela","Clavo", "Tornillo", "Tuerca"]
     carpetas = ["Arandelas", "Clavos", "Tornillos", "Tuercas"]
     
     # Clasificacion
     test = generar_base_datos()
+
+    # Generar el vector contador, vector K
+    vect_it=[]
+
+    vect_aciertos_KNN = []
+    vect_val_K = []
+    vect_eficiencia_KNN = []
+
+    cont_KMEANS = 0
+    vect_eficiencia_KMEANS = []
+    
+    
+    for i in range(K): #Consideramos el KNN y KNN Multiple
+        vect_aciertos_KNN.append(0) # Lo rellenamos de cero cada componente
+        vect_val_K.append(i+1)
+    
+    cont_piezas = 0
+
     for j in range(len(carpetas)):
         carpeta = carpetas[j]
         input_path = "./dataset/original/test/" + carpeta +"/"
@@ -491,36 +429,73 @@ def main():
             nombre = input_path + dirs_input[i]
             image = io.imread(nombre)
             cont_piezas +=1
-            KNN, KMEANS = clasifica(image, test)
 
-            KNN = KNN + 's'
-            KMEANS = KMEANS + 's'
-            if(carpeta == KNN):
-                cont_KNN +=1
-                estado_KNN = "Acerto KNN"
-            else:
-                estado_KNN = "NO acerto KNN"
+            print("Análisis de: ", carpeta +"/"+dirs_input [i])
+
+            # A partir de aca comienza el analisis con distintos valores de K
+            for  i in range(K-1): # Para una misma imagen la evaluamos con distintos valores de 
+                # Ejecutar clasificacion para un valor de K
+                KNN, KNN_Multiple, KMEANS = clasifica(image, test, K)
+                
+                # Categoria devuelta para un valor de K dado
+                KNN_Multiple = KNN_Multiple + 's'
+                
+                if(carpeta == KNN_Multiple):
+                    vect_aciertos_KNN[i+1] +=1
             
+            # KNN con K=1
+            KNN = KNN + 's'
+            if(carpeta == KNN):
+                    vect_aciertos_KNN[0] +=1
+
+            # KMEANS
+            KMEANS = KMEANS + 's'
             if(carpeta == KMEANS):
-                cont_KMEANS +=1
-                estado_KMEANS = "Acerto KMEANS"
-            else:
-                estado_KMEANS = "NO acerto KMEANS"
-
-            #print(KNN, KMEANS)
-            resultado = carpeta +"/"+dirs_input [i] + " :" + estado_KNN + " y " + estado_KMEANS 
-            print(resultado)
-    print("--------------------------------------------------------------------\n")
-    print("\nResultados:")
-    print("\tSe analizaron ", cont_piezas, " piezas")
-    print("\tSe acertaron: ", cont_KNN," piezas con KNN")
-    print("\tSe acertaron: ", cont_KMEANS, " piezas con KMEANS")
-
-    print("\nPorcentajes:")
-    print("\tPorcentaje de certeza KNN: ", cont_KNN/cont_piezas*100, "%")
-    print("\tPorcentaje de certeza KMEANS: ", cont_KMEANS/cont_piezas*100, "%")
+                    cont_KMEANS +=1
 
 
+            vect_it.append(cont_piezas)
+            vect_eficiencia_KMEANS.append(cont_KMEANS/cont_piezas*100)
+
+    # Rellenar vector de eficiencia
+    for i in range(K):
+        vect_eficiencia_KNN.append(vect_aciertos_KNN[i]*100/cont_piezas)
+
+    # Grafico de Aciertos -KNN
+    grafico_aciertos_KNN, ax = plt.subplots()
+    ax.plot(vect_val_K, vect_aciertos_KNN)
+    ax.grid(True)
+    ax.set_title("Rendimiento de KNN para distintos K")
+    ax.set_xlabel('K Nearest Neighbors')
+    ax.set_ylabel('Cantidad de Predicciones Correctas')
+    plt.savefig("pruebas/8_rendimiento/rendimiento_valores_K_aciertos" + ".jpg")
+
+    # Grafico de Eficiencia - KNN
+    grafico_eficiencia_KNN, ax = plt.subplots()
+    ax.plot(vect_val_K, vect_eficiencia_KNN)
+    ax.grid(True)
+    ax.set_title("Rendimiento de KNN")
+    ax.set_xlabel('K Nearest Neighbors')
+    ax.set_ylabel('Predicciones Correctas (%)')
+    plt.savefig("pruebas/8_rendimiento/rendimiento_valores_K_eficiencia" + ".jpg")
+
+    # Grafico de Eficiencia - KMEANS
+    grafico_eficiencia_KNN, ax = plt.subplots()
+    ax.plot(vect_it, vect_eficiencia_KMEANS)
+    ax.grid(True)
+    ax.set_title("Rendimiento de KMeans")
+    ax.set_xlabel('Número de Ejecución')
+    ax.set_ylabel('Predicciones Correctas (%)')
+    plt.savefig("pruebas/8_rendimiento/rendimiento_KMeans_eficiencia" + ".jpg")
+
+    MostrarResultados(cont_piezas, vect_aciertos_KNN, cont_KMEANS)
+
+    
 
 if __name__ == '__main__':  # Para que se pueda usar sin interfaz
-    main()
+    print("--------------------------------------------------------------------")
+    print("Rendimiento del Algoritmo de Clasificación de Imágenes")
+    print("--------------------------------------------------------------------\n")
+    print("Ingrese el valor de K hasta el que desea evaluar el algoritmo de KNN")
+    val_K = int(input("Valor de K = "))
+    rendimiento(val_K)

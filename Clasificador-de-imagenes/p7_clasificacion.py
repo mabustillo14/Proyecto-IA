@@ -233,7 +233,7 @@ def generar_base_datos():
     print("Clavos OK")
 
     ax.grid(True)
-    ax.set_title("Analisis completo de carpeta Train")
+    ax.set_title("Análisis completo de carpeta Train")
 
     yellow_patch = mpatches.Patch(color='yellow', label='Tornillo')
     red_patch = mpatches.Patch(color='red', label='Tuerca')
@@ -241,14 +241,14 @@ def generar_base_datos():
     green_patch = mpatches.Patch(color='green', label='Clavo')
     plt.legend(handles=[yellow_patch, red_patch, blue_patch, green_patch])
 
-    ax.set_xlabel('componente 1')
-    ax.set_ylabel('componente 2')
-    ax.set_zlabel('componente 4')
+    ax.set_xlabel('Eje Menor')
+    ax.set_ylabel('Eje Mayor')
+    ax.set_zlabel('Momento de Hu 1')
 
     plt.savefig("pruebas/7_clasificacion/grafico_base_de_datos.jpg")
     # plt.show()
 
-    print("Analisis completo de la base de datos de Train")
+    print("Análisis completo de la base de datos de Train")
     print("Cantidad de imagenes analizadas: ", len(datos))
 
     # Elemento a evaluar
@@ -278,7 +278,7 @@ def clasifica(image, test, numero_caja):
     """
     KNN: K Nearest Neighbors
     """
-    print("\nInicializacion KNN")
+    print("\nInicialización KNN")
     i = 0
     sum = 0
     for ft in datos[0].caracteristica:
@@ -299,7 +299,7 @@ def clasifica(image, test, numero_caja):
             d = sum
             test.pieza = element.pieza
 
-    print("Prediccion para KNN con K=1: ", test.pieza)
+    print("Predicción para KNN con K=1: ", test.pieza)
     KNN = test.pieza
 
     """
@@ -315,15 +315,32 @@ def clasifica(image, test, numero_caja):
                 datos[i] = datos[i - 1]
                 datos[i - 1] = aux
                 swap = True
-    print("\nPredicciones para KNN con K=9: ")
-    k = 9
-    for i in range(k):
+
+    """
+    KNN para un valor K dado
+    """
+    K = 3
+    vect_contador = [] # Cantidad de veces que se repite una categoria
+
+    # Comienza el analisis para distintos valores de K    
+    for i in range(K):
+        vect_contador.append(0)
         print(datos[i].pieza)
 
+        for j in range(K):
+            if(datos[i].pieza == datos[j].pieza):
+                vect_contador[i] +=1
+
+    maxContador = max(vect_contador)
+    indice_maxContador = vect_contador.index(maxContador)
+    KNN_Multiple = datos[indice_maxContador].pieza
+
+    resultado_KNN_Multiple = "KNN con K = " +str(K) + ": " + KNN_Multiple
+    print("Predicción para",resultado_KNN_Multiple)
     """
     K MEANS
     """
-    print("\nInicializacion KMeans")
+    print("\nInicialización KMeans")
 
     tornillo_data = []
     tuerca_data = []
@@ -363,9 +380,9 @@ def clasifica(image, test, numero_caja):
     green_patch = mpatches.Patch(color='green', label='Clavo')
     plt.legend(handles=[yellow_patch, red_patch, blue_patch, green_patch])
 
-    ax.set_xlabel('componente 1')
-    ax.set_ylabel('componente 2')
-    ax.set_zlabel('componente 4')
+    ax.set_xlabel('Eje Menor')
+    ax.set_ylabel('Eje Mayor')
+    ax.set_zlabel('Momento de Hu 1')
 
     plt.savefig("pruebas/7_clasificacion/means_de_caja_" + str(numero_caja) + ".jpg")
 
@@ -483,7 +500,7 @@ def clasifica(image, test, numero_caja):
     ax.scatter(arandela_mean[0], arandela_mean[1], arandela_mean[2], c='k', marker='o')
     ax.scatter(clavo_mean[0], clavo_mean[1], clavo_mean[2], c='k', marker='o')
 
-    print("Ubicacion de los means finales")
+    print("Ubicación de los means finales")
     print("Tornillo  Tuerca  Arandela  Clavo")
     print(len(tornillo_data), len(tuerca_data), len(arandela_data), len(clavo_data))
     fig_means
@@ -526,11 +543,12 @@ def clasifica(image, test, numero_caja):
     elif aux == dist_clavo:
         test.pieza = 'Clavo'
 
-    print("\nPrediccion para KMeans: ", test.pieza)
+    print("\nPredicción para KMeans: ", test.pieza)
     KMEANS = test.pieza
 
     # Devolver resultados
     respuesta.append("KNN: " + KNN)
+    respuesta.append(resultado_KNN_Multiple)
     respuesta.append("KMEANS: " + KMEANS)
     return respuesta
 
@@ -567,18 +585,19 @@ def main(foto4, foto3, foto2, foto1):
     resultado2 = clasifica(foto2, test, 2)
     resultado3 = clasifica(foto3, test, 3)
     resultado4 = clasifica(foto4, test, 4)
-
+    # Resultado = (KNN, KNN Multiple, KMeans)
     """
     Devolver orden de Apilamiento
     La prioridad es el metodo KNN por todas las pruebas hechas en eficiencia
+    Vamos a considerar el KNN con un K  mayor a 1, ya que las pruebas demuestran eficiencia a partir de K=2
     """
-    aux = resultado1[0].split(":")  # Le quitamos el "KNN:", para ello lo separamos por :
+    aux = resultado1[1].split(":")  # Le quitamos el "KNN K:", para ello lo separamos por :
     orden.append(aux[1])  # Tomamos el segundo termino de la separacion
-    aux = resultado2[0].split(":")
+    aux = resultado2[1].split(":")
     orden.append(aux[1])
-    aux = resultado3[0].split(":")
+    aux = resultado3[1].split(":")
     orden.append(aux[1])
-    aux = resultado4[0].split(":")
+    aux = resultado4[1].split(":")
     orden.append(aux[1])
 
     # Archivo con el orden de apilamiento
@@ -619,7 +638,7 @@ if __name__ == '__main__':  # Para que se pueda usar sin interfaz GUI
 
     # Pedir todos los numeros de las fotos a evaluar
     for i in range(cant_cajas):
-        text = "Introduce numero de la foto de la Caja #" + str(cant_cajas - i) + ": "
+        text = "Introduce número de la foto de la Caja #" + str(cant_cajas - i) + ": "
         numero = input(text)
         fotos_cajas.append(numero)
 

@@ -218,3 +218,100 @@ print(hu(tornillo_edge[0]))
 print(hu(tuerca_edge[0]))
 print(hu(arandela_edge[0]))
 print(hu(clavo_edge[0]))
+
+
+############################
+## Eje Menor y Eje Mayor ##
+############################
+# https://scikit-image.org/docs/stable/auto_examples/segmentation/plot_regionprops.html
+import math
+import numpy as np
+import pandas as pd
+
+from skimage.draw import ellipse
+from skimage.measure import label, regionprops, regionprops_table
+from skimage.transform import rotate
+
+
+image = np.zeros((600, 600))
+
+rr, cc = ellipse(300, 350, 100, 220)
+image[rr, cc] = 1
+
+image = rotate(image, angle=15, order=0)
+
+rr, cc = ellipse(100, 100, 60, 50)
+image[rr, cc] = 1
+
+label_img = label(image)
+regions = regionprops(label_img)
+
+fig, ax = plt.subplots()
+ax.imshow(image, cmap=plt.cm.gray)
+
+for props in regions:
+    y0, x0 = props.centroid
+    orientation = props.orientation
+    x1 = x0 + math.cos(orientation) * 0.5 * props.axis_minor_length
+    y1 = y0 - math.sin(orientation) * 0.5 * props.axis_minor_length
+    x2 = x0 - math.sin(orientation) * 0.5 * props.axis_major_length
+    y2 = y0 - math.cos(orientation) * 0.5 * props.axis_major_length
+
+    ax.plot((x0, x1), (y0, y1), '-r', linewidth=2.5)
+    ax.plot((x0, x2), (y0, y2), '-r', linewidth=2.5)
+    ax.plot(x0, y0, '.g', markersize=15)
+
+    minr, minc, maxr, maxc = props.bbox
+    bx = (minc, maxc, maxc, minc, minc)
+    by = (minr, minr, maxr, maxr, minr)
+    ax.plot(bx, by, '-b', linewidth=2.5)
+
+ax.axis((0, 600, 600, 0))
+
+# Guardar figura
+plt.savefig("./pruebas/5_extraccion/ejemplificacion_ejeMenor_ejeMayor.jpg")  
+
+
+###################
+## Excentricidad ##
+###################
+# importing required libraries
+import mahotas
+import numpy as np
+from pylab import gray, imshow, show
+import os
+import matplotlib.pyplot as plt
+  
+# Imagen a analizar
+prueba = './ejemplos/tornillo_prueba.jpg'
+
+# loading image
+img = mahotas.imread(prueba)
+img = cv2.resize(img, (500, 400)) 
+ 
+# filtering image
+img = img[:, :, 0]
+   
+print("\nExcentricidad de Tornillo")
+   
+# showing image
+#imshow(img)
+#show()
+ 
+# computing eccentricity value
+value = mahotas.features.eccentricity(img)
+resultado = "Excentricidad = " + str(value)
+ 
+# showing value
+print(resultado)
+
+
+fig, (ax0) = plt.subplots(1, 1)
+ax0.imshow(img)
+ax0.set_title(resultado)
+
+
+
+
+# Guardar resultados
+plt.savefig("./pruebas/5_extraccion/ejemplificacion_excentricidad.jpg")

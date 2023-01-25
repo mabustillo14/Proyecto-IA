@@ -10,12 +10,15 @@ from PIL import Image
 # Imagen a analizar
 prueba = './ejemplos/tornillo_prueba.jpg'
 
+
+
 ###################################################################
 ## Descomposicion de una imagen en una tupla de valores R, G y B ##
 ###################################################################
 
 # Cargar imagen
 tornillo = cv2.imread(prueba)
+cv2.imwrite("./pruebas/1_preprocesamiento/tornillo_prueba.jpg", tornillo)
 
 # Redimensionamiento de la imagen de entrada
 fixed_size = tuple((500, 400))

@@ -36,14 +36,15 @@ cv2.imwrite(path + fileb, imagen)
 # NOTA: A veces funciona mejor el algoritmo Canny en vez de Thresholding -> depende mucho de las características de la imagen de entrada
 
 # Cargar imagen
-imagen = cv2.imread('ejemplos/arandela_internet.jpg')
+imagen = cv2.imread('ejemplos/tornillo_prueba.jpg')
+cv2.imwrite("./pruebas/2_adaptacion/tornillo_prueba_original.jpg", imagen)
 
 """
 Los umbrales 190 y 255 se determinaron arbitrariamente para esta imagen.
 Si cambiamos el tipo de imagen deberíamos ajustarlos nuevamente
 """
-grises = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
-_, th = cv2.threshold(grises, 190, 255, cv2.THRESH_BINARY_INV)
+grises = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY) # convertir a escala de grises la imagen
+_, th = cv2.threshold(grises, 190, 255, cv2.THRESH_BINARY_INV) # si la intensidad de píxeles es menor que el umbral establecido, el valor se establece en 0; de lo contrario, se establece en 1 (blanco).
 
 # Detectar bordes
 cnts, _ = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -81,6 +82,7 @@ cv2.imwrite(path + fileb, imagen)
 
 # Cargar imagen
 imagen = cv2.imread('ejemplos/arandela_internet.jpg')
+cv2.imwrite("./pruebas/2_adaptacion/arandela_internet_original.jpg", imagen)
 grises = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
 
 """

@@ -9,6 +9,8 @@ from scipy import ndimage
 # Imagen a analizar
 prueba = './ejemplos/tornillo_prueba.jpg'
 
+
+
 ######################
 ## Filtro Gaussiano ##
 ######################
@@ -16,6 +18,7 @@ prueba = './ejemplos/tornillo_prueba.jpg'
 
 # Cargar imagen
 tornillo = cv2.imread(prueba)
+cv2.imwrite("./pruebas/3_filtracion/tornillo_prueba.jpg", tornillo)
 
 # Redimensionamiento de la imagen de entrada
 fixed_size = tuple((500, 400))

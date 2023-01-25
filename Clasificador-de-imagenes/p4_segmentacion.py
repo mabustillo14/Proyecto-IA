@@ -14,6 +14,8 @@ prueba = './ejemplos/tornillo_prueba.jpg'
 
 # Cargar imagen
 imagen = cv2.imread(prueba)
+cv2.imwrite("./pruebas/4_segmentacion/tornillo_prueba.jpg", imagen)
+
 imagen = color.rgb2gray(imagen)
 imagen = cv2.resize(imagen, (500,400))
 
