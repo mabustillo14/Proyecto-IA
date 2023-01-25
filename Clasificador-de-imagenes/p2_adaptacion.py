@@ -44,6 +44,7 @@ Los umbrales 190 y 255 se determinaron arbitrariamente para esta imagen.
 Si cambiamos el tipo de imagen deberíamos ajustarlos nuevamente
 """
 grises = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY) # convertir a escala de grises la imagen
+# cv2.threshold(fuente, valor de umbral, valor máximo, técnica de umbral) 
 _, th = cv2.threshold(grises, 190, 255, cv2.THRESH_BINARY_INV) # si la intensidad de píxeles es menor que el umbral establecido, el valor se establece en 0; de lo contrario, se establece en 1 (blanco).
 
 # Detectar bordes
