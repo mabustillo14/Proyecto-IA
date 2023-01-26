@@ -22,88 +22,119 @@ def astar(maze, start, end):
     end_node.g = end_node.h = end_node.f = 0
 
     #Creamos la lista abierta y cerrada para nodos
-    open_list = [] 
-    closed_list = []
+    lista_abierta = [] 
+    lista_cerrada = []
 
     #Agregue el cuadrado inicial (o nodo) a la lista abierta.
-    open_list.append(start_node)
+    lista_abierta.append(start_node)
     
-    # Loop until you find the end
-    while len(open_list) > 0:
+    cont_it = 0
+    max_iterations = (len(maze) // 2)  * 100
+
+    # Loop hasta encontrar el nodo final
+    while len(lista_abierta) > 0:
         
+
+        cont_it += 1
+        # si llegamos a este punto, devolvemos el camino, ya que puede que no haya solución o
+        # el costo de computación es demasiado alto
+        if cont_it > max_iterations:
+            print ("Demasiadas iteraciones")
+            path = []
+            current = nodo_Actual
+            while current is not None:
+                path.append(current.position)
+
+                # Actualizo el actual por el padre del mismo
+                current = current.parent
+            return path[::-1]
+
+
         #Busque el cuadrado de costo F más bajo en la lista abierta. Nos referimos a esto como el cuadrado actual
-        current_node = open_list[0]
+        nodo_Actual = lista_abierta[0]
         current_index = 0
-        for index, item in enumerate(open_list):
-            if item.f < current_node.f:
-                current_node = item
+        for index, item in enumerate(lista_abierta):
+            if item.f < nodo_Actual.f: # Buscar la celda de menor F
+                nodo_Actual = item
                 current_index = index
         
-        # Pop current off open list, add to closed list
-        open_list.pop(current_index)
-        closed_list.append(current_node)
         
-        # Encontrar el objetivo
-        if current_node == end_node:
+
+        # ELiminar la celda actual de la lista abierta, agregar a la lista cerrada
+        lista_abierta.pop(current_index)
+        lista_cerrada.append(nodo_Actual)
+        
+        # Condicional de llegar al objetivo
+        if nodo_Actual == end_node:
             path = []
-            current = current_node
+            current = nodo_Actual
             while current is not None:
                 path.append(current.position)
                 current = current.parent
             return path[::-1] 
         
-        # Generate children
-        children = []
-        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0)]: #Solo me puedo mover vertical y horizontalmente
-            
+        # Generar hijos para la siguiente lista abierta
+        children = [] # Generamos maximo 4 hijos
+        for new_position in [(-1, 0), (1, 0), (0, -1), (0, 1)]: #Solo me puedo mover vertical y horizontalmente
+            # Prioridades: Arriba, Abajo, Izquierda, Derecha
             # Obtener la posicion del nodo
-            node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
+            posicion_nodo = (nodo_Actual.position[0] + new_position[0], nodo_Actual.position[1] + new_position[1])
             
             # Asegurarme que el nodo este dentro de las dimensiones del mapa
-            if node_position[0] > (len(maze) - 1) or node_position[0] < 0 or node_position[1] > (len(maze[len(maze)-1]) -1) or node_position[1] < 0:
+            if posicion_nodo[0] > (len(maze) - 1) or posicion_nodo[0] < 0 or posicion_nodo[1] > (len(maze[len(maze)-1]) -1) or posicion_nodo[1] < 0:
                 continue
             # Asegurarme que estoy en una casilla sin obstaculo
-            if maze[node_position[0]][node_position[1]] != 0:
+            if maze[posicion_nodo[0]][posicion_nodo[1]] != 0:
                 continue
              
-            # Crear un nuevo nodo
-            new_node = nodoo(current_node, node_position)
+            # Crear un nuevo nodo- un hijo
+            nuevo_node = nodoo(nodo_Actual, posicion_nodo)
             
-            # Agregar el nuevo nodo
-            children.append(new_node)
+            # Si pasa todas las pruebas, agregar el nuevo nodo
+            children.append(nuevo_node)
         
-        # Loop through children
-        for child in children:
+
+        # Para cada elemento de la lista children se verifica si ya se analizo antes
+        for nodo_children in children:
+
              # Child is on the closed list
-            for closed_child in closed_list:
-                if child == closed_child:
+            for nodo_lista_cerrada in lista_cerrada:
+                if nodo_children == nodo_lista_cerrada: # Si ya pertenece a la lista cerrada, no se continua analizando lo de abajo
                     continue
+                
+            #En caso de que no perteneza a la lista cerrada, sucede lo siguiente
 
-             # Create the f, g, and h values
-            child.g = current_node.g + 1 #distancia entre el nodo actual y el nodo inicial
-            #child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2) #Distancia Manhattan
-            child.h = (((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2) ** 0.5) #Distancia Manhattan
-            child.f = child.g + child.h #Costo Total
+            # Calcular f,g,h
+            nodo_children.g = nodo_Actual.g + 1 #distancia entre el nodo actual y el nodo inicial
+            nodo_children.h = ((nodo_children.position[0] - end_node.position[0]) ** 2) + ((nodo_children.position[1] - end_node.position[1]) ** 2) #Distancia Manhattan
+            nodo_children.f = nodo_children.g + nodo_children.h #Costo Total
 
-            # Child is already in the open list
-            for open_node in open_list:
-                if child == open_node and child.g > open_node.g:
+            # Verificar que no vuelve a una casilla donde ya estuvo
+            for nodo_lista_abierta in lista_abierta:
+
+                
+                if nodo_children == nodo_lista_abierta and nodo_children.g > nodo_lista_abierta.g: 
                     continue
-            # Add the child to the open list
-            open_list.append(child)
+            
+            # Añadir el nodo_children a la lista abierta si paso todas las pruebas
+            lista_abierta.append(nodo_children)
+    
+
 
 def MostrarMapa(NombreMapa, titulo, maze):
     # Generar Figura
     plt.matshow(maze)
     # Agregar nombre a los ejes
-    plt.xlabel("Coordenada X", size = 16,)
-    plt.ylabel("Coordenada Y", size = 16)
+    # Los ejes estan invertidos
+    plt.xlabel("Coordenada Y", size = 16,)
+    plt.ylabel("Coordenada X", size = 16)
+    
     # Agregar el titulo
     plt.title(
         titulo, 
         fontdict={'color':'black', 'size':16},
         loc='center')
-
+    
     # Guardar figura
     plt.savefig(NombreMapa)   
 
@@ -147,6 +178,9 @@ def solucion(Ax, Ay, Bx, By):
         for i in range(len(path)): # El sistema de referencia esta invertido
             num1 = path[i][0] # Coordenada Y
             num2 = path[i][1] # Coordenada X
+
+            # Pasamos las coordenadas a graficar como (y,x)
+            # Los ejes estan invertidos
             lista.append(num1)
             lista.append(num2)
 
@@ -161,6 +195,7 @@ def solucion(Ax, Ay, Bx, By):
 
         # Output para interfaz gráfica
         imagen_output = Image.open('mapa_solucion.png')
+
         return path, imagen_output
     
     else:
