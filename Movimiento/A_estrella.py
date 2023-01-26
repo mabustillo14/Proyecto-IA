@@ -81,7 +81,8 @@ def astar(maze, start, end):
 
              # Create the f, g, and h values
             child.g = current_node.g + 1 #distancia entre el nodo actual y el nodo inicial
-            child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2) #Distancia Manhattan
+            #child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2) #Distancia Manhattan
+            child.h = (((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2) ** 0.5) #Distancia Manhattan
             child.f = child.g + child.h #Costo Total
 
             # Child is already in the open list
@@ -129,25 +130,26 @@ def solucion(Ax, Ay, Bx, By):
     if validacion_coordenadas(Ax, Ay, Bx, By, maze):
     
         # Establecer los puntos de comienzo y fin
-        # El programa lee las coordenadas como (y,x)
-        PuntoStart = (Ay, Ax) # 0,0
-        PuntoEnd = (By, Bx) #7,7
+        # El programa lee las coordenadas como (x,y)
+        PuntoStart = (Ax, Ay) # 0,0
+        PuntoEnd = (Bx, By) #7,7
+        
         # PuntoStart = (2,2) # 0,0
         # PuntoEnd = (16,16) # 7,7
 
         print('\nLa trayectoria solución que se debe seguir es:')
         # Pasamos los parametros del mapa, el punto A y B y devuelve el string solucion
         path = astar(maze, PuntoStart, PuntoEnd) 
-        print(path)
+        print(path) 
 
         # Agregar al Mapa la secuencia de la solucion
         lista = []
-        for i in range(len(path)):
-            num1 = path[i][0] # Coordenada X
-            num2 = path[i][1] # Coordenada Y
+        for i in range(len(path)): # El sistema de referencia esta invertido
+            num1 = path[i][0] # Coordenada Y
+            num2 = path[i][1] # Coordenada X
             lista.append(num1)
             lista.append(num2)
-        
+
         # Colorear los puntos solucion
         for i in range(0,len(lista),2):
             maze[lista[i]][lista[i+1]] = 5 
