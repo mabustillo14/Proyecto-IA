@@ -15,7 +15,7 @@ def Desapilar(x,y):#Quitar un bloque que estaba sobre otro
     text_Desapilar += "\t\tCosto del Camino: 0 movimiento"
     print(text_Desapilar)
 
-def Sujetar(x): #Sujetar un bloque de la Mesa
+def Sujetar(x): #Sujetar un bloque
     text_Sujetar = "\tSujetar(" + x + ") \n"
     text_Sujetar += "\t\tPRECOND: Libre("+ x + "), Libre(Brazo), Caja("+ x + ") \n"
     text_Sujetar += "\t\tEFECTO: Sujetar (" + x + "), ~Libre(Brazo) \n" 

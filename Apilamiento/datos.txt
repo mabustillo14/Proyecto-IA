@@ -1,2 +1,2 @@
-Fecha y Hora de determinación de secuencia de Apilamiento: 2023-01-23 16:52:25
- Arandela, Tuerca, Tornillo, Clavo,
+Fecha y Hora de determinación de secuencia de Apilamiento: 2023-01-29 03:19:40
+ Tornillo, Tuerca, Arandela, Clavo,

@@ -17,7 +17,7 @@ VARIABLES GLOBALES
 Para almacenar los datos y graficar
 """
 global datos, fig, ax
-datos = []
+datos = [] # Base de datos
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
@@ -183,6 +183,9 @@ def generar_base_datos():
         img = cv2.imread(clavo_path + image_path)
         clavo.append(img)
 
+    """
+    Extraccion de caracteristicas de la base de datos
+    """
     i = 0
     # Analisis de tornillos
     iter = 0
@@ -232,6 +235,7 @@ def generar_base_datos():
         iter += 1
     print("Clavos OK")
 
+    # Graficar base de Datos
     ax.grid(True)
     ax.set_title("Análisis completo de carpeta Train")
 
@@ -269,6 +273,7 @@ def clasifica(image, test, numero_caja):
     global datos
     global contador_cajas
 
+    # Le asignamos un valor inicial
     test.image, test.caracteristica = extraccion(image, hacer_transformacion=True)
     test.pieza = 'Arandela'  # label inicial
 
@@ -277,15 +282,18 @@ def clasifica(image, test, numero_caja):
 
     """
     KNN: K Nearest Neighbors
+    Objetivo: Buscar el vecino de la distancia más cercana
     """
     print("\nInicialización KNN")
     i = 0
     sum = 0
+    # Calculamos la distancia respecto al label inicial para tener una referencia
     for ft in datos[0].caracteristica:
-        sum = sum + np.power(np.abs(test.caracteristica[i] - ft), 2)
+        sum = sum + np.power(np.abs(test.caracteristica[i] - ft), 2) # = (x2-x1)**2
         i += 1
     d = np.sqrt(sum)
 
+    # Comparamos ese valor con el resto de elementos de la base de datos
     for element in datos:
         sum = 0
         i = 0
@@ -295,6 +303,7 @@ def clasifica(image, test, numero_caja):
 
         element.distancia = np.sqrt(sum)
 
+        # Actualizamos el caracter de pieza cuando encuentre una distancia mas corta a la actual
         if sum < d:
             d = sum
             test.pieza = element.pieza
@@ -305,6 +314,8 @@ def clasifica(image, test, numero_caja):
     """
     BUBBLE SORT: Algoritmo de ordenamiento de burbuja
     Lo elegi porque es bastante estable
+     --- Algoritmo de ordenación más simple que funciona intercambiando
+    repetidamente los elementos adyacentes si están en el orden incorrecto ---
     """
     swap = True
     while swap:
@@ -320,13 +331,14 @@ def clasifica(image, test, numero_caja):
     KNN para un valor K dado
     """
     K = 3
-    vect_contador = [] # Cantidad de veces que se repite una categoria
+    vect_contador = [] # Cantidad de veces que se repite una categoria en los K vecinos
 
     # Comienza el analisis para distintos valores de K    
     for i in range(K):
         vect_contador.append(0)
-        print(datos[i].pieza)
+        print(datos[i].pieza) # Determinar el vecino más cercano
 
+        # Ver cuantas veces se ha repetido ese vecino respecto a los K vecinos
         for j in range(K):
             if(datos[i].pieza == datos[j].pieza):
                 vect_contador[i] +=1
@@ -337,11 +349,15 @@ def clasifica(image, test, numero_caja):
 
     resultado_KNN_Multiple = "KNN con K = " +str(K) + ": " + KNN_Multiple
     print("Predicción para",resultado_KNN_Multiple)
+
+
+
     """
     K MEANS
     """
     print("\nInicialización KMeans")
 
+    # Segmentar los datos de acuerdo a cada etiqueta
     tornillo_data = []
     tuerca_data = []
     arandela_data = []
@@ -356,7 +372,8 @@ def clasifica(image, test, numero_caja):
             arandela_data.append(element)
         if element.pieza == 'Clavo':
             clavo_data.append(element)
-
+    
+    # Escoger el Mean de cada categoria, centrado en un punto caracteristica
     tornillo_mean = list(random.choice(tornillo_data).caracteristica)
     tuerca_mean = list(random.choice(tuerca_data).caracteristica)
     arandela_mean = list(random.choice(arandela_data).caracteristica)
@@ -365,6 +382,7 @@ def clasifica(image, test, numero_caja):
     fig_means = plt.figure()
     ax = fig_means.add_subplot(111, projection='3d')
 
+    # Graficar los K Means Iniciales
     # fig_means, ax = plt.subplots()
     ax.scatter(tornillo_mean[0], tornillo_mean[1], tornillo_mean[2], c='y', marker='o')
     ax.scatter(tuerca_mean[0], tuerca_mean[1], tuerca_mean[2], c='r', marker='o')
@@ -386,6 +404,8 @@ def clasifica(image, test, numero_caja):
 
     plt.savefig("pruebas/7_clasificacion/means_de_caja_" + str(numero_caja) + ".jpg")
 
+
+    #############################
     # Asignacion, Actualizacion y Convergencia
     tornillo_len = [0, 0, 0]
     tuerca_len = [0, 0, 0]
@@ -407,6 +427,7 @@ def clasifica(image, test, numero_caja):
             sum_arandela = 0
             sum_clavo = 0
 
+            # Calcular la distancia al mean
             for i in range(0, len(element.caracteristica) - 1):
                 sum_tornillo += np.power(np.abs(tornillo_mean[i] - element.caracteristica[i]), 2)
                 sum_tuerca += np.power(np.abs(tuerca_mean[i] - element.caracteristica[i]), 2)
@@ -426,6 +447,7 @@ def clasifica(image, test, numero_caja):
             if dist_clavo < aux:
                 aux = dist_clavo
 
+            # Añadir cada elemento a una categoria, la de menor distancia
             if aux == dist_tornillo:
                 tornillo_data.append(element.caracteristica)
             elif aux == dist_tuerca:
@@ -460,6 +482,7 @@ def clasifica(image, test, numero_caja):
             sum_clavo[1] += p[1]
             sum_clavo[2] += p[2]
 
+        # Calculo la media
         tornillo_mean[0] = sum_tornillo[0] / len(tornillo_data)
         tornillo_mean[1] = sum_tornillo[1] / len(tornillo_data)
         tornillo_mean[2] = sum_tornillo[2] / len(tornillo_data)
@@ -476,10 +499,12 @@ def clasifica(image, test, numero_caja):
         clavo_mean[1] = sum_clavo[1] / len(clavo_data)
         clavo_mean[2] = sum_clavo[1] / len(clavo_data)
 
+        # Indicar cuantos elementos tenia cada categoria
         # print("Tornillo  Tuerca  Arandela  Clavo")
         # print(len(tornillo_data), len(tuerca_data), len(arandela_data), len(clavo_data))
 
         # CONVERGENCIA Y CONDICION DE SALIDA
+        # Si hay una mejora, se actualiza
         if not tornillo_mean == tornillo_len:
             tornillo_len = tornillo_mean
 
@@ -494,23 +519,48 @@ def clasifica(image, test, numero_caja):
 
         iter += 1
 
-    # Ubicacion de los means finales
-    ax.scatter(tornillo_mean[0], tornillo_mean[1], tornillo_mean[2], c='k', marker='o')
-    ax.scatter(tuerca_mean[0], tuerca_mean[1], tuerca_mean[2], c='k', marker='o')
-    ax.scatter(arandela_mean[0], arandela_mean[1], arandela_mean[2], c='k', marker='o')
-    ax.scatter(clavo_mean[0], clavo_mean[1], clavo_mean[2], c='k', marker='o')
 
-    print("Ubicación de los means finales")
+    # Ubicacion de los means finales en un grafico
+
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111,projection='3d')
+    
+
+    ax1.scatter(tornillo_mean[0], tornillo_mean[1], tornillo_mean[2], c='y', marker='o')
+    ax1.scatter(tuerca_mean[0], tuerca_mean[1], tuerca_mean[2], c='r', marker='o')
+    ax1.scatter(arandela_mean[0], arandela_mean[1], arandela_mean[2], c='b', marker='o')
+    ax1.scatter(clavo_mean[0], clavo_mean[1], clavo_mean[2], c='g', marker='o')
+
+    print("Ubicación de los means finales, cantidad de elementos por grupo")
     print("Tornillo  Tuerca  Arandela  Clavo")
     print(len(tornillo_data), len(tuerca_data), len(arandela_data), len(clavo_data))
     fig_means
 
+    ax1.grid(True)
+    ax1.set_title("Means Finales")
+
+    yellow_patch = mpatches.Patch(color='yellow', label='Tornillo')
+    red_patch = mpatches.Patch(color='red', label='Tuerca')
+    blue_patch = mpatches.Patch(color='blue', label='Arandela')
+    green_patch = mpatches.Patch(color='green', label='Clavo')
+    plt.legend(handles=[yellow_patch, red_patch, blue_patch, green_patch])
+
+    ax1.set_xlabel('Eje Menor')
+    ax1.set_ylabel('Eje Mayor')
+    ax1.set_zlabel('Momento de Hu 1')
+
+    plt.savefig("pruebas/7_clasificacion/means_finales.jpg")
+
+    #######################################################
+    # Comparar la pieza caracteristica con los mean finales
     # Mean mas cercano
     sum_tornillo = 0
     sum_tuerca = 0
     sum_arandela = 0
     sum_clavo = 0
 
+    # Calculo la distancia a cada mean
     for i in range(0, len(test.caracteristica) - 1):
         sum_tornillo += np.power(np.abs(test.caracteristica[i] - tornillo_mean[i]), 2)
         sum_tuerca += np.power(np.abs(test.caracteristica[i] - tuerca_mean[i]), 2)
@@ -522,7 +572,7 @@ def clasifica(image, test, numero_caja):
     dist_arandela = np.sqrt(sum_arandela)
     dist_clavo = np.sqrt(sum_clavo)
 
-    print("\nMean mas cercano")
+    print("\nMean mas cercano, distancia de la pieza a cada mean final")
     print("Tornillo  Tuerca  Arandela  Clavo")
     print(dist_tornillo, dist_tuerca, dist_arandela, dist_clavo)
 
@@ -546,7 +596,9 @@ def clasifica(image, test, numero_caja):
     print("\nPredicción para KMeans: ", test.pieza)
     KMEANS = test.pieza
 
-    # Devolver resultados
+    """
+    Devolver predicciones
+    """
     respuesta.append("KNN: " + KNN)
     respuesta.append(resultado_KNN_Multiple)
     respuesta.append("KMEANS: " + KMEANS)
