@@ -45,6 +45,10 @@ def astar(maze, start, end):
             while current is not None:
                 path.append(current.position)
 
+                #Si en ese path ya aparecio el punto objetivo, que no envie los otros elementos
+                if(current.position == end_node.position):    
+                    return path[::0]
+
                 # Actualizo el actual por el padre del mismo
                 current = current.parent
             return path[::-1]
@@ -80,11 +84,12 @@ def astar(maze, start, end):
             # Obtener la posicion del nodo
             posicion_nodo = (nodo_Actual.position[0] + new_position[0], nodo_Actual.position[1] + new_position[1])
             
+            # Si es verdadero se corta esa iteracion
             # Asegurarme que el nodo este dentro de las dimensiones del mapa
             if posicion_nodo[0] > (len(maze) - 1) or posicion_nodo[0] < 0 or posicion_nodo[1] > (len(maze[len(maze)-1]) -1) or posicion_nodo[1] < 0:
                 continue
             # Asegurarme que estoy en una casilla sin obstaculo
-            if maze[posicion_nodo[0]][posicion_nodo[1]] != 0:
+            if maze[posicion_nodo[0]][posicion_nodo[1]] != 0 and posicion_nodo!=end_node.position:
                 continue
              
             # Crear un nuevo nodo- un hijo
