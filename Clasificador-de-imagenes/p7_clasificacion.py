@@ -373,7 +373,7 @@ def clasifica(image, test, numero_caja):
         if element.pieza == 'Clavo':
             clavo_data.append(element)
     
-    # Escoger el Mean de cada categoria, centrado en un punto caracteristica
+    # Escoger el primer Mean de cada categoria, centrado en un punto caracteristica aleatorio
     tornillo_mean = list(random.choice(tornillo_data).caracteristica)
     tuerca_mean = list(random.choice(tuerca_data).caracteristica)
     arandela_mean = list(random.choice(arandela_data).caracteristica)
@@ -414,7 +414,8 @@ def clasifica(image, test, numero_caja):
 
     iter = 0
     while iter < 20:
-
+        
+        # Segmentar los datos de acuerdo a cada etiqueta, son los elementos que pertenecen a cada mean
         tornillo_data = []
         tuerca_data = []
         arandela_data = []
@@ -427,7 +428,7 @@ def clasifica(image, test, numero_caja):
             sum_arandela = 0
             sum_clavo = 0
 
-            # Calcular la distancia al mean
+            # Calcular la distancia al mean, esto se hace para cada eje
             for i in range(0, len(element.caracteristica) - 1):
                 sum_tornillo += np.power(np.abs(tornillo_mean[i] - element.caracteristica[i]), 2)
                 sum_tuerca += np.power(np.abs(tuerca_mean[i] - element.caracteristica[i]), 2)
@@ -482,7 +483,7 @@ def clasifica(image, test, numero_caja):
             sum_clavo[1] += p[1]
             sum_clavo[2] += p[2]
 
-        # Calculo la media
+        # Calculo la media de la posicion del mean de cada pieza, este seria la ubicacion del posible nuevo centroide
         tornillo_mean[0] = sum_tornillo[0] / len(tornillo_data)
         tornillo_mean[1] = sum_tornillo[1] / len(tornillo_data)
         tornillo_mean[2] = sum_tornillo[2] / len(tornillo_data)
@@ -521,12 +522,9 @@ def clasifica(image, test, numero_caja):
 
 
     # Ubicacion de los means finales en un grafico
-
-
     fig = plt.figure()
     ax1 = fig.add_subplot(111,projection='3d')
     
-
     ax1.scatter(tornillo_mean[0], tornillo_mean[1], tornillo_mean[2], c='y', marker='o')
     ax1.scatter(tuerca_mean[0], tuerca_mean[1], tuerca_mean[2], c='r', marker='o')
     ax1.scatter(arandela_mean[0], arandela_mean[1], arandela_mean[2], c='b', marker='o')

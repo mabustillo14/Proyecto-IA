@@ -141,7 +141,7 @@ def Solucion(Posicion_Inicial,Caja_1,Caja_2,Caja_3,Caja_4): #Secuencia de pasos 
                     secuencia += "Soltar(" + mover_pieza + ","+ mesas[i+1]+") \n"
                     costo +=1
                     Orden.append(Posicion_Inicial[cant_cajas-1-i])
-            print(Orden) #orden sobre la mesa de derecha a izquierda
+            #print(Orden) #orden sobre la mesa de derecha a izquierda
 
 
 
