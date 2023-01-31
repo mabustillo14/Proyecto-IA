@@ -27,13 +27,24 @@ with open("datos.txt") as archivo:
             Posicion_Inicial.pop()
         print("\nApilamiento ascendente Inicial: ", Posicion_Inicial)
 
+# Determinar si hay piezas repetidas - Para las situaciones donde hay elementos repetidos
+repetidos = []
+for i in range(len(Posicion_Inicial)):
+    repetidos.append(0)
+    for j in range(len(Posicion_Inicial)):
+        if(Posicion_Inicial[i]==Posicion_Inicial[j]):
+            repetidos[i] += 1
+it = 0
+for i in range(len(repetidos)):
+    if(repetidos[i]>1):
+        it +=1
+        Posicion_Inicial[i] += " "+ str(it)
 
 # Generar las opciones para los inputs
 inputs =  []
 for i in range(cant_cajas):
     titulo = "Caja " +  str(cant_cajas-i)
-    inputs.append(gr.Radio(Posicion_Inicial, label=titulo))
-   
+    inputs.append(gr.Radio(Posicion_Inicial, label=titulo))  
 
 # Obtener el orden de apilamiento inicial - Orden ascendente
 ApiladoInicial = "Sobre(" +Posicion_Inicial[0] + ",mesa A), "

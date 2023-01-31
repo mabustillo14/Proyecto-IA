@@ -88,7 +88,7 @@ def Solucion(Posicion_Inicial,Caja_1,Caja_2,Caja_3,Caja_4): #Secuencia de pasos 
     # Elementos Iniciales
     secuencia_objetivo = [Caja_4,Caja_3,Caja_2,Caja_1] #Posicion Final - orden ascendente
     mesas = ["mesa A","mesa B", "mesa C", "mesa D"]
-
+    
     if(Caja_1 != None) and (Caja_2 != None) and (Caja_3 != None) and (Caja_4 != None): # Cada opcion tiene una selección
 
         #Validamos los datos ingresados
