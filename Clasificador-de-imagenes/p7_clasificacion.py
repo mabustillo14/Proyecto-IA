@@ -102,7 +102,7 @@ def extraccion(image, hacer_transformacion=False):
     """
     FILTRACION
     """
-    aux = cv2.GaussianBlur(aux, (3, 3), 0)  # Aplicar filtro gaussiano
+    aux = cv2.GaussianBlur(aux, (3, 3), 0)  # Aplicar filtro gaussiano -- (3,3) indica cuánto se debe cambiar el valor del píxel dado para desenfocar la imagen
     aux = filters.sobel(aux)  # Aplicar filtro Sobel o Laplaciano
 
     """
